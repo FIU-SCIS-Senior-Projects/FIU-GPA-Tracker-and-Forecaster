@@ -1,0 +1,55 @@
+<!DOCTYPE = html>
+<html>
+	<head>
+		<title>FIU GPA Tracker</title>
+		<link type="text/css" rel="stylesheet" href="main.css"/>
+		<script src="ValidateReg.js"></script>
+	</head>
+	<body>
+	<div class="yellowBar"></div>
+	<div id="header">
+		<div class="headerLinks" class="container clearfix">
+			<div class="logo">
+				<img class="logo" src="http://www.fiu.edu/_assets/images/core/fiu-logo-large.png" />
+				<a href="index.html">GPA Tracker and Forecaster</a>
+			</div>
+			<div class="nav">
+				<ul>
+					<li><a href="register.html">Register</a></li>
+					<li><a href=#>Log in</a></li>
+					<li><a href=#>About</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="jumbotronReg" method="post">
+		<div class="infobox">
+			<div class="fields">
+				<form>
+					Email:<br>
+					<input type="text" name="email" onblur="checkEmail(this.value)">
+					<br>
+					Username:<br>
+					<input type="text" name="username"">
+					<br>
+					Password:<br>
+					<input type="password" name="password">
+					<br>
+					Confirm Password:<br>
+					<input type="password" name="confirm_password" onblur="checkPassword(this.value, password.value)">
+					<br>
+					First Name:<br>
+					<input type="text" name="first_name">
+					<br>
+					Last Name:<br>
+					<input type="text" name="last_name">
+					<br>
+					<input id="sub" type="submit" name="submit">
+				</form>
+			</div>
+		</div>
+	</div>
+	<div class="footer">
+	</div>
+	</body>
+</html>
