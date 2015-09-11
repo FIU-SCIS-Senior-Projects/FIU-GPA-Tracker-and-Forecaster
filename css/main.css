@@ -134,12 +134,16 @@ ul ol {
 
 .infobox {
 	background-color: #112d54;
-	width: 20%;
+	width: 300px;
 	border: 2px solid #E6C12B;
 	border-radius:10px;
 	color:white;
 	text-shadow: 1px 1px #000000;
 	margin-left: 15%;
+}
+
+.infobox input {
+	border: 2px solid #E6C12B;
 }
 
 .fields {
