@@ -13,7 +13,7 @@ if (isset($_POST['username'], $_POST['password'])) {
     if (login($username, $password, $mysqli) == true) {
         
        // Login success 
-        header('Location: ../#');
+        header('Location: ../index.html#');
   
     } else {
         // Login failed 
