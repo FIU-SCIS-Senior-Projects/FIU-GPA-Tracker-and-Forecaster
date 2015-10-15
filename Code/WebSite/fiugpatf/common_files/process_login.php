@@ -11,10 +11,30 @@ if (isset($_POST['username'], $_POST['password'])) {
     $password = $_POST['password']; // The hashed password.
 
     if (login($username, $password, $mysqli) == true) {
-        
-       // Login success 
-        header('Location: ../index.html#');
-  
+	$user = $username;
+	$stmt = $mysqli->prepare("SELECT type FROM student_data WHERE username = ? ");
+   $stmt->bind_param('s', $user);
+   $stmt->execute();    // Execute the prepared query.
+   $stmt->store_result();
+   $stmt->bind_result($type);
+   //".$username."
+	$typeUser;
+    while($stmt->fetch())
+    {
+        $typeUser = $type;
+    }
+        echo $type;
+    
+
+
+							if($type == "1"){
+
+        //Login success 
+        header('Location: ../overallgpadashboard/student_roster.html');
+					}else{ 
+   								header('Location: ../overallgpadashboard/OvrlDash.html');
+					}
+ 
     } else {
         // Login failed 
         header('Location: ../index.php?error=1');
@@ -22,8 +42,8 @@ if (isset($_POST['username'], $_POST['password'])) {
 
 echo "end";
 } else {
-    // The correct POST variables were not sent to this page. 
-    echo "Invalid Request";
+//     The correct POST variables were not sent to this page. 
+   echo "Invalid Request";
 }
 
 

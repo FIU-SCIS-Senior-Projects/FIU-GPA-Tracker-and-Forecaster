@@ -1,0 +1,519 @@
+* {
+	box-sizing: border-box;
+}
+
+.yellowBar {
+    background-color: #c69b19;
+    border: 1px solid #d6a618;
+    height: 0.375em;
+    margin-top:-0.375em;
+    width: 100%;
+}
+
+#header {
+	background-color: #112d54;
+	width: 100%;
+	border-bottom: 1px solid #001832;
+	border-top: 1px solid #001832;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset;
+    margin: 0px !important;
+    padding: 0;
+	z-index: 999;
+	height:7em;
+	border-bottom: 2px solid #E6C12B;
+}
+
+.headerLinks {
+	width:65%;
+	height:5.5em;
+	margin:auto;
+	margin-top:-2.5em;
+}
+
+.logo {
+	margin-top: 1.5em;
+	height: 57px;
+  	width: 258px;
+}
+
+.logo a {
+	color: #c69b19;
+	font-family: "Helvetica Neue", Arial, Helvetica, sans-serif;
+	font-size: 16px;
+	text-decoration: none;
+	font-weight: bold;
+	clear:both;
+}
+
+.nav ul {
+	float:right;
+	margin-top:-2.4em;
+	
+}
+.nav ul li{
+	display: inline-block;
+	background: #e7c124;
+	border: 1px solid #d6a618;
+	box-shadow: 0 1px 1px black;
+	font-size: 0.9em;
+	margin: -2px;
+	padding: 3px;
+	clear: both;
+}
+
+.nav ul li a{
+	color: #002d62;
+	display: block;
+	padding: 4px 8px 5px;
+	transition-duration: 4s;
+	transition-timing-function: linear;
+	display: inline;
+	text-decoration: none;
+	font-weight:bold;
+}
+
+ul ol {
+	font-size: 14px;
+	line-height:1.6;
+	list-style-position:outside;
+}
+
+.jumbotron {
+	background-image: url("https://news.fiu.edu/wp-content/uploads/mmc-1.jpg");
+	width: 100%;
+	height:55em;
+	background-size:   cover;               
+    background-repeat: no-repeat;
+    background-position: center center;
+	background-attachment: fixed;
+	padding-top:5em;
+}
+
+.footer{
+	height:20em;
+	background-color:#E6C12B;
+	border-bottom: 2px solid black;
+	border-top:1px solid #112d54;
+}
+
+.textbox {
+	height:250px;
+	width: 400px;
+	background-color: #112d54;
+	border: 2px solid #E6C12B;
+	border-radius:10px;
+	margin-left:4em;
+}
+
+.textbox h1 {
+	color: white;
+	text-shadow: 1px 1px #000000;
+	padding: auto;
+	width: 360px;
+	margin: auto;
+}
+
+.textbox p {
+	color:white;
+	text-shadow: 1px 1px #000000;
+	width: 360px;
+	padding-top:10px;
+	margin: auto;
+}
+
+.jumbotronReg {
+	background-image: url("http://news.fiu.edu/wp-content/uploads/13451722143_949abc0155_b.jpg");
+	width: 100%;
+	height:55em;
+	background-size:   cover;               
+    background-repeat: no-repeat;
+    background-position: center center;
+	background-attachment: fixed;
+	padding-top:5em;
+}
+
+.infobox {
+	background-color: #112d54;
+	width: 300px;
+	border: 2px solid #E6C12B;
+	border-radius:10px;
+	color:white;
+	text-shadow: 1px 1px #000000;
+	margin-left: 15%;
+}
+
+.infobox input {
+	border: 2px solid #E6C12B;
+}
+
+.fields {
+	margin-left: 2.75em;
+	margin-top: 1em;
+	margin-bottom: 2em;
+}
+
+
+.jumbotronOVRL {
+	background-color: #e1dcd2;
+	background-size:   cover;               
+    background-repeat: no-repeat;
+    background-position: center center;
+	background-attachment: fixed;
+	width: 100%;
+	height:55em;
+	padding-top:5em;
+	
+}
+
+.jumbotronSTUDROST {
+
+	background-color: #e1dcd2;
+	background-size:   cover;               
+    background-repeat: no-repeat;
+    background-position: center center;
+	background-attachment: fixed;
+	width: 100%;
+	height:55em;
+	padding-top:1em;
+}
+
+.screenPrivacy {
+	width: 25%;
+	float:top;
+	margin-left: 5%;
+    margin-bottom: 3.5%;
+	display: inline-block;
+	
+}
+
+
+.screenPrivacy ul li{
+	display: inline-block;
+	font-size: 0.9em;
+	margin: -2px;
+	padding: 3px;
+	float:left;
+	
+}
+.screenPrivacy ul {
+	
+	width:100%;
+	margin-left:50%;
+	margin-top: -13%;
+	
+}
+
+
+.screenPrivacy p {
+    color: rgb(74, 89, 140);
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    padding-top: 4px;
+    text-align: left;
+    text-decoration: none;
+    text-transform: uppercase;
+	width:50%;
+	
+
+}
+
+
+.studentName{
+	margin-left: 62%;
+	margin-top:-5.1em;
+    width: 30%;
+	float:top;
+	
+	text-align: right;
+}
+
+#studName {
+ 
+ color: rgb(74, 89, 140);
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 15px;
+    font-weight: bold;
+    padding-top: 4px;
+  
+    text-decoration: none;
+    text-transform: uppercase;
+
+}
+
+
+.GPATable {
+
+	clear: left;
+	height: 350px;
+	width:  45%;
+	background-color: #e1dcd2;
+	
+	border-radius:20px ;
+	margin-left: 2.5%;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+
+
+#coursesTaken{
+	background-color: #fff;
+  margin:auto;
+  width:  100%;
+  height: 100%;
+  column-width: 30px;
+  
+
+}
+
+thead tr{
+
+ height: 10px;
+
+}
+
+
+.futureCoursesTable {
+
+	height: 350px;
+	width:  45%;
+	background-color: #e1dcd2;
+	
+	border-radius:20px;
+	margin-left: 52.5%;
+	margin-top: -29%;
+	overflow-y: auto;
+	overflow-x: hidden;
+}
+
+
+#coursesNeeded{
+
+  margin:auto;
+  width:  100%;
+  height: 100%;
+  column-width: 30px;
+  
+
+}
+
+
+
+.tableHead th {
+
+
+font-family: Verdana;
+background-color: rgb(115, 130, 181);
+color : #fff;
+text-transform: uppercase;
+
+
+}
+
+
+.tableBody td {
+
+
+font-family: Verdana;
+background-color: #fff;
+
+
+}
+
+
+
+.GPACalcBox {
+	border: 2px solid #E6C12B;;
+	margin-left: 2.5%;
+	width: 45%;
+	margin-top:1%;
+	background-color:#fff;
+	border-radius: 15px;
+	
+ }
+
+.GPACalcBox p {
+	display: inline;
+	width: 30%;
+	margin: 10%;
+
+	color: rgb(74, 89, 140);
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+   
+    
+    text-decoration: none;
+    text-transform: uppercase;
+}
+
+#GPACalc  {
+  
+	font-weight: bold;
+	color: #000000;
+	padding-left:48%;
+	
+	
+}
+
+
+
+.importButton{
+	
+	
+	display: inline-block;
+	margin-left: 10%;
+	margin-bottom: 5%;
+    width: 90%;
+	height: 200px;
+	
+	
+}
+
+.importButton ul{
+	
+	display: inline-block;
+
+	
+}
+
+
+.importButton ul li{
+	width: auto;
+	display: inline-block;
+	border-radius: 4px;
+	border: 1px solid #fff;
+	box-shadow: 0 1px 1px black;
+	font-size: 0.9em;
+	
+
+
+}
+
+#impfore {
+	margin-left: -7.5%;
+	
+}
+
+#addmoddel{
+	margin-left: 17.5%;
+	
+}
+
+#addmoddel2{
+	margin-left: 46.25%;
+}	
+ #editstud{
+	width: 15%;
+	
+	border-radius: 4px;
+	border: 1px solid #fff;
+	box-shadow: 0 1px 1px black;
+	font-size: 0.9em;
+	margin-left: 80%;
+	margin-top: 3%;
+	
+} 
+
+
+
+
+.targetGPA {
+	color: rgb(74, 89, 140);
+    font-family: Verdana,Arial,sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+    padding-top: 4px;
+    text-align: left;
+    text-decoration: none;
+    text-transform: uppercase;
+	margin-left: 27.5%;
+	margin-top: -5%;
+	width: 500px;
+	
+	
+
+}
+
+.targetGPA #text{
+    float: left;
+	width: 50%;
+	
+
+}
+.targetGPA #data{
+    float: right;
+	width: 50%;
+	color: #000000;
+	
+
+}
+
+
+
+#data select{
+    padding-top: 3%;
+	
+}
+
+#data p{
+    float: bottom;
+	
+}
+
+div data{
+
+}
+
+.tableBody
+{
+	border: 8px dashed #fff;
+	margin-top: -10%; 
+
+
+}
+
+
+.GPAHistory {
+
+
+	
+	clear: right;
+	float:left;
+	margin-bottom: 20%;
+	margin-top: -20%;
+	margin-left: 60%;
+}
+
+.GPAGraph{
+	
+  
+	border-radius: 15px;
+	border: 3px dashed  #112d54;
+	
+	
+	
+}
+
+#GraphTitle {
+
+text-align:center;
+width: 100%;
+}
+
+TD {
+	
+	font-size:12px;
+	height: auto;
+
+}
+
+TH{
+	
+	height: 5px;
+	
+}
+
+}
+
