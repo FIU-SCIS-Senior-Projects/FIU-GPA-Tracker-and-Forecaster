@@ -160,6 +160,7 @@ function sto_openDetailsRow2(nTr){
 	    courseNeeded.fnClose( nTr );
 		
 		$(nTr).css("color","");
+		$("#pop2").remove();
 		});
 			        				
 	});

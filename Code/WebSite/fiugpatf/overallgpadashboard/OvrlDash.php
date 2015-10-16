@@ -1,5 +1,5 @@
 <?php
-//include_once 'db_connect';
+include_once '../common_files/db_connect.php';
 include_once '../common_files/functions.php';
 
 
@@ -47,8 +47,19 @@ else
 if ($action == "courseTaken1")
 { 
 
+		 
+        $user = $_SESSION['username'];
+        $stmt = $mysqli->prepare("SELECT student_course.username, student_course.courseID, course_info.credits, student_course.grade FROM student_course INNER JOIN course_info ON student_course.courseID=course_info.courseID WHERE student_course.username= ? ");
 
-	$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
+        $stmt->bind_param('s', $user);
+        $stmt->execute();
+        $stmt->bind_result($suser, $CID, $credit, $grd);
+        $output = array();
+        while ($stmt->fetch()) {
+            array_push($output, array($CID, $credit, $grd));
+        }
+        echo json_encode($output);
+	/*$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
 	mysql_select_db('GPA_Tracker', $connection);
 	$user = $_SESSION['username'];
 	$sql = "SELECT student_course.username, student_course.courseID, course_info.credits, student_course.grade FROM student_course INNER JOIN course_info ON student_course.courseID=course_info.courseID WHERE student_course.username= '".$user."' "; 
@@ -72,7 +83,7 @@ if ($action == "courseTaken1")
 
 	echo json_encode($coursesTaken);
 	
-
+*/
 	
 
 
@@ -106,16 +117,19 @@ if (isset($_POST['credits'])) {
 		$credits = "";
 	}
 
-	
+		$user = $_SESSION['username'];
+			$sql = "INSERT INTO student_course (username, courseID, grade, weight, relevance) VALUES(\"{$user}\", \"{$courseID}\",\"{$grade}\",\"{$credits}\", 5)";
+
+ /*    
 		$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
 		mysql_select_db('GPA_Tracker', $connection);
 		$user = $_SESSION['username'];
 		$sql = "INSERT student_course (username, courseID, grade, weight, relevance) VALUES (\"{$user}\", \"{$courseID}\",\"{$grade}\",\"{$credits}\", 5);";
 		//$sql = 'DELETE FROM `student_course` WHERE `username` = 'mdoe' AND `courseID` = 'COP2210'';
 		//VALUES (\"{$_SESSION['username']}\", \"{$key}\", \"IP\", 1, 1
+*/
 
-		
-			if (mysql_query($sql)) {
+			if($mysqli->query($sql) === TRUE)  {
 				
 				$result = array('success' => true);
 			} else {
@@ -167,14 +181,13 @@ if (isset($_POST['modifiedGrade'])) {
 	}
 
 	
-		$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
-		mysql_select_db('GPA_Tracker', $connection);
+	
 		$user = $_SESSION['username'];
 		$sql = "UPDATE student_course SET grade = '".$modifiedGrade."' WHERE courseID = '".$courseID."' AND username ='".$user."' ";
 
 
 		
-			if (mysql_query($sql)) {
+			if ($mysqli->query($sql) === TRUE) {
 				
 				$result = array('success' => true);
 			} else {
@@ -217,13 +230,12 @@ if (isset($_POST['modifiedRelevance'])) {
 	}
 
 	
-		$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
-		mysql_select_db('GPA_Tracker', $connection);
+		
 		$user = $_SESSION['username'];
 		$sql = "UPDATE courses_needed SET weight ='" .$modifiedWeight."', relevance = '".$modifiedRelevance."' WHERE courseID = '".$courseID."' AND username ='".$user."'  ";
 
 		
-			if (mysql_query($sql)) {
+			if ($mysqli->query($sql) === TRUE) {
 				
 				$result = array('success' => true);
 			} else {
@@ -250,16 +262,15 @@ if (isset($_POST['courseID'])) {
 	}
 
 	
-		$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
-		mysql_select_db('GPA_Tracker', $connection);
+		
 		$user = $_SESSION['username'];
 		$sql = "DELETE FROM student_course WHERE username = '" .$user. "' AND courseID = '".$courseID."' ";
-		//$sql = 'DELETE FROM `student_course` WHERE `username` = 'mdoe' AND `courseID` = 'COP2210'';
+		
 		
 
 		
-			if (mysql_query($sql)) {
-				mysql_query($sql);
+			if ($mysqli->query($sql) === TRUE) {
+				//mysql_query($sql);
 				$result = array('success' => true);
 			} else {
 				$result = array('success' => false, 'message' => 'Item could not be deleted');
@@ -300,8 +311,18 @@ class major {
 if ($action == "courseNeeded")
 { 
 
-	
-	$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
+	        $user = $_SESSION['username'];
+        $stmt = $mysqli->prepare("SELECT courses_needed.courseID, course_info.credits, courses_needed.weight, courses_needed.relevance FROM courses_needed INNER JOIN course_info ON courses_needed.courseID=course_info.courseID WHERE courses_needed.username= ? AND NOT courses_needed.courseID in (SELECT courseID FROM student_course WHERE username = ?)");
+
+        $stmt->bind_param('ss',$user, $user);
+        $stmt->execute();
+        $stmt->bind_result($CID, $credit, $weight, $relev);
+        $output = array();
+        while ($stmt->fetch()) {
+            array_push($output, array($CID, $credit, $weight, $relev));
+        }
+        echo json_encode($output);
+/*	$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
 	mysql_select_db('GPA_Tracker', $connection);
 	$user = $_SESSION['username'];
 $sql = "SELECT courses_needed.courseID, course_info.credits, courses_needed.weight, courses_needed.relevance FROM courses_needed INNER JOIN course_info ON courses_needed.courseID=course_info.courseID WHERE courses_needed.username= '".$user."' AND NOT courses_needed.courseID in (SELECT courseID FROM student_course WHERE username = '".$user."')";
@@ -318,7 +339,7 @@ $sql = "SELECT courses_needed.courseID, course_info.credits, courses_needed.weig
 
 
 	echo json_encode($coursesTaken);
-
+*/
 }
  
 
@@ -334,16 +355,15 @@ if (isset($_POST['courseID'])) {
 	}
 
 	
-		$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
-		mysql_select_db('GPA_Tracker', $connection);
+		
 		$user = $_SESSION['username'];
 		$sql = "DELETE FROM student_course WHERE username = '" .$user. "' AND courseID = '".$courseID."' ";
 		//$sql = 'DELETE FROM `student_course` WHERE `username` = 'mdoe' AND `courseID` = 'COP2210'';
 		
 
 		
-			if (mysql_query($sql)) {
-				mysql_query($sql);
+			if ($mysqli->query($sql) === TRUE) {
+				
 				$result = array('success' => true);
 			} else {
 				$result = array('success' => false, 'message' => 'Item could not be deleted');
@@ -362,8 +382,8 @@ if ($action == "getUser")
 { 
 
 
-	$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
-	mysql_select_db(GPA_Tracker, $connection);
+//	$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
+//	mysql_select_db(GPA_Tracker, $connection);
     
 	$user = $_SESSION['username'];
 
@@ -379,8 +399,18 @@ if ($action == "getUser")
 if ($action == "getGradProgram")
 { 
 
+ $user = $_SESSION['username'];
+        $stmt = $mysqli->prepare("SELECT graduate_program, required_gpa FROM graduate_programs ");
 
-	$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
+        
+        $stmt->execute();
+        $stmt->bind_result($prg, $gpa);
+        $output = array();
+        while ($stmt->fetch()) {
+            array_push($output, array($prg, $gpa));
+        }
+        echo json_encode($output);
+/*	$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
 	mysql_select_db(GPA_Tracker, $connection);
     
 	$sql = "SELECT graduate_program, required_gpa FROM graduate_programs "; 
@@ -399,15 +429,26 @@ if ($action == "getGradProgram")
 
 	echo json_encode($gradProg);
 
-
+*/
 	
 }
 
 if ($action == "editStudent")
 { 
 
+ 
+        $user = $_SESSION['username'];
+        $stmt = $mysqli->prepare("SELECT username, Last_Name, First_Name, Email FROM student_data WHERE type = '0' ");
 
-	$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
+        
+        $stmt->execute();
+        $stmt->bind_result($suser, $LN, $FN, $mail);
+        $output = array();
+        while ($stmt->fetch()) {
+            array_push($output, array($suser, $LN, $FN, $mail));
+        }
+        echo json_encode($output);
+/*	$connection = mysql_connect('localhost' , 'root' , 'sqliscool');
 	mysql_select_db('GPA_Tracker', $connection);
 	$user = $_SESSION['username'];
 	$sql = "SELECT username, Last_Name, First_Name, Email FROM student_data WHERE type = '0' "; 
@@ -428,7 +469,7 @@ if ($action == "editStudent")
 
 	echo json_encode($coursesTaken);
 	
-
+*/
 	
 
 

@@ -22,9 +22,9 @@ if(isset($_SESSION['username']))
         }
     }
 
-    echo "<li><a href=#>GPA Dashboard</a></li>";
+    echo "<li><a href=\"../overallgpadashboard/OvrlDash.html\">GPA Dashboard</a></li>";
     echo "<li><a href=\"./current.html\">Grade Dashboard</a></li>";
-    echo "<li><a href=#>Logout</a></li>";
+    echo "<li><a href=\"../login.html\">Logout</a></li>";
 }
 else
 {
