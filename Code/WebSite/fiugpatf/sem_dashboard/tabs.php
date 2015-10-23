@@ -51,13 +51,13 @@ if($_POST['action'] == 'add')
         $stmt = $mysqli->prepare("INSERT into assessment_type (username, courseID, assessment, percentage) VALUES (?, ?, ?, ?)");
         $stmt->bind_param('ssss', $user, $_POST['course'], $_POST['assesment'], $_POST['percentage']);
         if($stmt->execute())
-        {
-            echo 'true';
-        }
-        else
-        {
-            echo 'false';
-        }
+		{
+			echo "true";
+		}
+		else
+		{
+			echo $stmt->error;
+		}
     }
 }
 
@@ -70,13 +70,13 @@ if($_POST['action'] == 'addGrade')
         $stmt = $mysqli->prepare("INSERT into assessment (username, courseID, assessment, grade) VALUES (?, ?, ?, ?)");
         $stmt->bind_param('ssss', $user, $_POST['course'], $_POST['assesment'], $_POST['grade']);
         if($stmt->execute())
-        {
-            echo 'true';
-        }
-        else
-        {
-            echo 'false';
-        }
+		{
+			echo "true";
+		}
+		else
+		{
+			echo $stmt->error;
+		}
     }
 }
 
@@ -112,8 +112,14 @@ if($_POST['action'] == 'removeGrade')
         $user = $_SESSION['username'];
         $stmt = $mysqli->prepare("Delete from assessment WHERE username = ? AND courseID = ? AND grade = ? AND assessment = ?");
         $stmt->bind_param('ssss', $user, $_POST['course'], $_POST['grade'], $_POST['assessment']);
-        $stmt->execute();
-        echo "true";
+        if($stmt->execute())
+		{
+			echo "true";
+		}
+		else
+		{
+			echo $stmt->error;
+		}
     }
     else
     {
@@ -131,8 +137,14 @@ if($_POST['action'] == 'modifyGrade')
                                   SET grade = ?
                                   WHERE username = ? AND courseID = ? AND grade = ? AND assessment = ?");
         $stmt->bind_param('sssss', $_POST['newGrade'], $user, $_POST['course'], $_POST['grade'], $_POST['assessment']);
-        $stmt->execute();
-        echo "true";
+        if($stmt->execute())
+		{
+			echo "true";
+		}
+		else
+		{
+			echo $stmt->error;
+		}
     }
 }
 
@@ -144,8 +156,82 @@ if($_POST['action'] == 'removeBucket')
         $user = $_SESSION['username'];
         $stmt = $mysqli->prepare("DELETE from assessment_type where username = ? and courseID = ? and assessment = ?");
         $stmt->bind_param('sss', $user, $_POST['course'], $_POST['assessment']);
+        if($stmt->execute())
+		{
+			echo "true";
+		}
+		else
+		{
+			echo $stmt->error;
+		}
+    }
+}
+
+if($_POST['action'] == 'GetAllAssessments')
+{
+    if(isset($_SESSION['username']))
+    {
+        $mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
+        $user = $_SESSION['username'];
+        $stmt = $mysqli->prepare("SELECT assessment, percentage
+                                  FROM   assessment_type
+                                  WHERE  username = ? and courseID = ?");
+        $stmt->bind_param('ss', $user, $_POST['course']);
         $stmt->execute();
-        echo "true";
+        $stmt->bind_result($bucket, $per);
+
+        $output = array();
+        $average = 0;
+        $grade;
+        $totalPer = 0;
+        while($stmt->fetch())
+        {
+            $grade = averageAssess($bucket);
+            array_push($output, array($bucket, round($grade, 2)));
+            if($grade != "No Grades")
+            {
+                $average += $grade * $per;
+                $totalPer += $per;
+            }
+        }
+
+        if($totalPer == 0)
+        {
+            array_push($output, array("Total", "No Grades"));
+        }
+        else{
+            array_push($output, array("Total", round($average/$totalPer, 2)));
+        }
+
+
+        echo json_encode($output);
+    }
+
+}
+
+function averageAssess($category)
+{
+    $conn = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
+    $user = $_SESSION['username'];
+    $stmt = $conn->prepare("SELECT grade
+                                  FROM   assessment
+                                  WHERE  username = ? and courseID = ? and assessment = ?");
+    $stmt->bind_param('sss', $user, $_POST['course'], $category);
+    $stmt->execute();
+    $stmt->bind_result($Assessgrade);
+    $runAvg = 0;
+    $count = 0;
+    while($stmt->fetch())
+    {
+        $runAvg += $Assessgrade;
+        $count++;
+    }
+    if($count != 0)
+    {
+        return $runAvg / $count;
+    }
+    else{
+        return "No Grades";
     }
 }
 ?>

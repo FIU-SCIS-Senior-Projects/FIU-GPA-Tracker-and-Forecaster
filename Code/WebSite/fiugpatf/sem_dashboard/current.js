@@ -9,6 +9,7 @@ var breakRowNum;
 
 function start() {
     $('#current_course').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="ajax1"></table>');
+	//$('#current_course').append('<button type="button" id="ExportButton">Export Data</button>');
 
     $.ajax({
         type: 'POST',
@@ -22,7 +23,8 @@ function start() {
                 "aoColumns": [
                     {"sTitle": "Course ID"},
                     {"sTitle": "Course Name"},
-                    {"sTitle": "Credits"}
+                    {"sTitle": "Credits"},
+					{"sTitle": "Current Grade"}
                 ],
                 "bJQueryUI": true,
                 "bAutoWidth": false,
@@ -32,8 +34,30 @@ function start() {
             $('#ajax1 tbody tr td').on('click', curr_rowClickHandler);
         }
     });
+
+	//$('#ExportButton').click(function(){
+	//	exportData();
+	//});
 }
 
+function exportData()
+{
+	$.ajax({
+        type: 'POST',
+        url: 'getCurrCourse.php',
+        data: {
+            action: 'exportData'},
+        dataType: 'text',
+        success: function(data) {
+			if(data.length > 0){
+				download('export.sql', data);
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+		    alert(errorThrown);
+		}
+	});
+}
 function curr_rowClickHandler(){
     var nTr = this.parentNode;
     var open= false;
@@ -70,6 +94,7 @@ function curr_openDetailsRow(nTr){
 
     });
 
+
     $("#Breakdown"+aData[0]).click(function(){
         location.href = 'breakdown.html?id=' + aData[0];
     });
@@ -82,8 +107,8 @@ function curr_formatStoreManagerDetails ( oTable, nTr )
     var sOut = '';
     sOut += '<div id="courseDetails'+id+'">';
     sOut += '    <div class="buttonColumnDetails">';
-    sOut += '        <button id="Remove'+id+'">Remove</button><br>';
-    sOut += '        <button id="Breakdown'+id+'">Add/Change Breakdown</button><br>';
+    sOut += '        <button id="Remove'+id+'" class="breakdownButton">Remove Course</button><br>';
+    sOut += '        <button id="Breakdown'+id+'" class="breakdownButton">Assessment Breakdown</button><br>';
     sOut += '    </div>';
     sOut += '</div>';
     return sOut;
@@ -199,3 +224,17 @@ function breakdown_submit()
     */
     breakRowNum = 0;
 }
+
+function download(filename, text) {
+   var pom = document.createElement('a');
+   pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+   pom.setAttribute('download', filename);    
+   if (document.createEvent) {
+       var event = document.createEvent('MouseEvents');
+       event.initEvent('click', true, true);
+       pom.dispatchEvent(event);
+   }
+   else {
+       pom.click();
+   }
+} 

@@ -1,5 +1,6 @@
 var course;
 var maintab;
+var gradeTable;
 
 $(document).ready(function(){
     course = getUrlVars()["id"];
@@ -35,33 +36,47 @@ function makeTabs(tabs)
     var div;
     var div = '';
     div += '<div id="addTab">';
-    div += '    <form>';
-    div += '         <table>';
-    div += '             <thead>';
-    div += '                 <tr>';
-    div += '                     <th>Assessment Type</th>';
-    div += '                     <th>Percentage</th>';
-    div += '                 </tr>';
-    div += '             </thead>';
-    div += '             <tbody>';
-    div += '                 <tr>';
-    div += '                     <td><input type="text" id="assesment"></td>';
-    div += '                     <td><input type="text" id="percentage"></td>';
-    div += '                 </tr>';
-    div += '             </tbody>';
-    div += '         </table>';
-    div += '         <button type="button" id="addBreak">Add Assessment</button>';
-    div += '    </form>';
+    div += '         <table cellpadding="0" cellspacing="0" border="0" class="display" id="allAssess"></table>';
+    div += '         <button type="button" id="addBreak" class="tabButton">Add Assessment</button>';
     div += '</div>';
     $('#tabs').append(div);
-    $('#tabs').attr("tabindex", 0);
-    $('#tabs ul').append('<li><a href="#addTab">Add Assesment</a></li>');
+    $('#tabs ul').append('<li><a href="#addTab">Assessment Managment</a></li>');
+
+
+	$.ajax({
+		type: 'POST',
+		url: 'tabs.php',
+		data: {
+		    action: 'GetAllAssessments',
+	        course: course
+	    },
+		dataType: 'json',
+		success: function(data) {
+		    gradeTable = $('#allAssess').dataTable({
+		        "aaData": data,
+		        "aoColumns": [
+		            {"sTitle": "Assessment"},
+		            {"sTitle": "Cumulative Average"}
+		        ],
+		        "bJQueryUI": true,
+		        "bAutoWidth": false,
+		        "sPaginationType": "full_numbers",
+				retrieve: true
+		    });
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+		    alert(errorThrown);
+		}
+	});
 
     for(var i = 0; i<tabs.length; i++)
     {
-        $('#tabs ul').append('<li><a href="#' + tabs[i] + '"> ' + tabs[i] + '</a></li>');
+        $('#tabs ul').append('<li><a href="#' + removeSpace(tabs[i]) + '"> ' + tabs[i] + '</a></li>');
         createDiv(tabs[i]);
     }
+
+	//$('#tabs ul').append('<li><a href="#help">Help</a></li>');
+	//createHelp();
 
 
     $('#addBreak').click(function(){
@@ -76,20 +91,18 @@ function makeTabs(tabs)
             tabs.tabs( "refresh" );
         }
     });
-
 }
 
 function createDiv(assessment)
 {
+	var assessmentNoSpace = removeSpace(assessment);
     var div = '';
-    div += '<div id="'+ assessment +'">';
+    div += '<div id="'+ assessmentNoSpace +'">';
+    div += '<table cellpadding="0" cellspacing="0" border="0" class="display" id="' + assessmentNoSpace +'grades"></table>';
     div +=     '<form>';
-    div +=         '<h1>Add Grade</h1>';
-    div +=         '<input type="text" id="grade'+ assessment + '"><br>';
-    div +=         '<button type="button" id="button' + assessment +'">Add Grade</button><br>';
-    div += '        <button type="button" id="remove' + assessment +'">Remove Bucket</button><br>';
+    div +=         '<button type="button" id="button' + assessmentNoSpace +'" class="tabButton">Add Grade</button><br>';
+    div += '        <button type="button" id="remove' + assessmentNoSpace +'" class="tabButton">Remove Assessment</button><br>';
     div +=     '</form>';
-    div += '<table cellpadding="0" cellspacing="0" border="0" class="display" id="' + assessment +'grades"></table>';
     div += '</div>';
 
     $('#tabs').append(div);
@@ -104,7 +117,7 @@ function createDiv(assessment)
         },
         dataType: 'json',
         success: function(data) {
-            currCourse = $('#' + assessment + 'grades').dataTable({
+            currCourse = $('#' + assessmentNoSpace + 'grades').dataTable({
                 "aaData": data,
                 "aoColumns": [
                     {"sTitle": ""},
@@ -114,8 +127,8 @@ function createDiv(assessment)
                 "bAutoWidth": false,
                 "sPaginationType": "full_numbers"
             });
-            $('#' + assessment + 'grades ' + 'tbody tr td').off();
-            $('#' + assessment + 'grades ' + 'tbody tr td').on('click', curr_rowClickHandler);
+            $('#' + assessmentNoSpace + 'grades ' + 'tbody tr td').off();
+            $('#' + assessmentNoSpace + 'grades ' + 'tbody tr td').on('click', curr_rowClickHandler);
 
             function curr_rowClickHandler()
             {
@@ -141,16 +154,16 @@ function createDiv(assessment)
             function curr_openDetailsRow(nTr){
                 currCourse.fnOpen( nTr, curr_formatStoreManagerDetails(currCourse, nTr), "ui-state-highlight" );
                 var aData = currCourse.fnGetData( nTr );
-                $("#" + assessment + "Remove"+aData[0]).button();
-                $("#" + assessment + "Modify"+aData[0]).button();
+                $("#" + assessmentNoSpace + "Remove"+aData[0]).button();
+                $("#" + assessmentNoSpace + "Modify"+aData[0]).button();
 
-                var divId = "#" + assessment + "Details"+aData[0];
+                var divId = "#" + assessmentNoSpace + "Details"+aData[0];
 
-                $("#" + assessment + "Remove"+aData[0]).click(function(){
+                $("#" + assessmentNoSpace + "Remove"+aData[0]).click(function(){
                     remove_assessment(aData[1], nTr);
                 });
 
-                $("#" + assessment + "Modify"+aData[0]).click(function(){
+                $("#" + assessmentNoSpace + "Modify"+aData[0]).click(function(){
                     modify_assessment(aData[1],aData[0], nTr);
                 });
             }
@@ -160,10 +173,10 @@ function createDiv(assessment)
                 var aData = oTable.fnGetData( nTr );
                 var id = aData[0];
                 var sOut = '';
-                sOut += '<div id="' + assessment +'Details'+id+'">';
+                sOut += '<div id="' + assessmentNoSpace +'Details'+id+'">';
                 sOut += '    <div class="buttonColumnDetails">';
-                sOut += '        <button id="' + assessment + 'Remove'+id+'">Remove</button><br>';
-                sOut += '        <button id="' + assessment + 'Modify'+id+'">Modify</button><br>';
+                sOut += '        <button id="' + assessmentNoSpace + 'Remove'+id+'">Remove</button><br>';
+                sOut += '        <button id="' + assessmentNoSpace + 'Modify'+id+'">Modify</button><br>';
                 sOut += '    </div>';
                 sOut += '</div>';
                 return sOut;
@@ -188,6 +201,7 @@ function createDiv(assessment)
                             if (data == 'true') {
                                 currCourse.fnClose(nTr);
                                 currCourse.fnDeleteRow(nTr);
+								recreateGradeTable();
                             }
                             else {
                                 alert("Error: Course was not removed.");
@@ -205,7 +219,7 @@ function createDiv(assessment)
                 var row = parseInt(id.slice(-1)) - 1;
 
                 var div = '';
-                div += '<div id="Modify'+ id +'">';
+                div += '<div id="Modify'+ id +'" title="Modify Grade">';
                 div +=     '<form>';
                 div +=         '<h1>Modify Grade</h1>';
                 div +=         '<input type="text" id="grade'+ id + '"><br>';
@@ -213,7 +227,7 @@ function createDiv(assessment)
                 div +=     '</form>';
                 div += '</div>';
 
-                $('#' + assessment).append(div);
+                $('#' + assessmentNoSpace).append(div);
 
                 $('#Modify' + id).dialog({
                     modal: true
@@ -236,33 +250,99 @@ function createDiv(assessment)
                         success: function(data) {
                             if(data == "true")
                             {
-                                alert("Grade Modified");
                                 currCourse.fnUpdate(newGrade, row, 1);
+								recreateGradeTable();
+								currCourse.fnClose( nTr );
                             }
+							else
+							{
+								alert("Grade Not Modified\nError: " + data);
+							}
                         }
                     });
                     $('#Modify' + id).dialog('close');
                     $('#Modify'+ id).remove();
                 });
             }
+
+			function addGrade(assessment,  currCourse)
+			{
+				var assessmentNoSpace = removeSpace(assessment);
+				var div = '';
+				div +='<div id="AddGradeDialog" title="Add Grade">';
+				div +='    <h1>Add Grade</h1>';
+				div +='    <input type="text" id="grade'+ assessmentNoSpace + '">';
+				div +='    <button id="AddGradeSub">Submit</button>';
+				div +='</div>';
+	
+				$('#' + assessmentNoSpace).append(div);
+
+				$('#AddGradeSub').click(function(){
+					var grade = $('#grade' + assessmentNoSpace).val();
+					$.ajax({
+						type: 'POST',
+						url: 'tabs.php',
+						data: {
+						    action: 'addGrade',
+						    course: course,
+						    assesment: assessment,
+						    grade: grade
+						},
+						dataType: 'text',
+						success: function(data) {
+						    if(data == "true")
+						    {
+						        currCourse.dataTable().fnAddData([
+						            "Grade" + (currCourse.fnSettings().fnRecordsTotal() + 1),
+						            grade
+						        ]);
+								recreateGradeTable();
+								$('#' + assessmentNoSpace + 'grades ' + 'tbody tr td').off();
+					            $('#' + assessmentNoSpace + 'grades ' + 'tbody tr td').on('click', curr_rowClickHandler);
+						        $('#AddGradeDialog').dialog("close");
+						    }
+							else
+							{
+								alert("Grade Not Added\nError: " + data);
+							}
+						}
+					});
+				});
+
+				$('#AddGradeDialog').dialog({
+					modal: true,
+					close: function( event, ui ) {
+						$('#AddGradeDialog').remove();
+					}
+				});
+			}
+			$('#button' + assessmentNoSpace).click(function(){
+        		addGrade(assessment, currCourse);
+    		});
+
+			$('#' + 'remove' + assessmentNoSpace).click(function(){
+				removeAssessment(assessment);
+			});
         },
         error: function(XMLHttpRequest, textStatus, errorThrown){
             alert(errorThrown);
         }
     });
 
-
-    $('#button' + assessment).click(function(){
+/*
+    $('#button' + assessmentNoSpace).click(function(){
         addGrade(assessment, currCourse);
     });
 
-    $('#' + 'remove' + assessment).click(function(){
+    $('#' + 'remove' + assessmentNoSpace).click(function(){
         removeAssessment(assessment);
     });
+*/
 }
 
 function removeAssessment(assessment)
 {
+	var assessmentNoSpace = removeSpace(assessment);
     $.ajax({
         type: 'POST',
         url: 'tabs.php',
@@ -275,64 +355,184 @@ function removeAssessment(assessment)
         success: function(data) {
             if(data == "true")
             {
-                $("#" + assessment).remove();
-                $("li[aria-controls = '" + assessment +"']").remove();
+                $("#" + assessmentNoSpace).remove();
+                $("li[aria-controls = '" + assessmentNoSpace +"']").remove();
                 maintab.tabs("refresh");
+				recreateGradeTable();
             }
+			else
+			{
+				alert("Assessment Not Modified\nError: " + data);
+			}
         }
     });
 }
 
+/*
 function addGrade(assessment,  currCourse)
 {
-    var grade = $('#grade' + assessment).val();
-    $.ajax({
-        type: 'POST',
-        url: 'tabs.php',
-        data: {
-            action: 'addGrade',
-            course: course,
-            assesment: assessment,
-            grade: grade
-        },
-        dataType: 'text',
-        success: function(data) {
-            if(data == "true")
-            {
-                alert("Grade Added");
-                currCourse.dataTable().fnAddData([
-                    "Grade" + (currCourse.fnSettings().fnRecordsTotal() + 1),
-                    grade
-                ]);
+	var assessmentNoSpace = removeSpace(assessment);
+    var div = '';
+    div +='<div id="AddGradeDialog" title="Add Grade">';
+    div +='    <h1>Add Grade</h1>';
+    div +='    <input type="text" id="grade'+ assessmentNoSpace + '">';
+    div +='    <button id="AddGradeSub">Submit</button>';
+    div +='</div>';
+	
+    $('#' + assessmentNoSpace).append(div);
+
+    $('#AddGradeSub').click(function(){
+        var grade = $('#grade' + assessmentNoSpace).val();
+        $.ajax({
+            type: 'POST',
+            url: 'tabs.php',
+            data: {
+                action: 'addGrade',
+                course: course,
+                assesment: assessment,
+                grade: grade
+            },
+            dataType: 'text',
+            success: function(data) {
+                if(data == "true")
+                {
+                    currCourse.dataTable().fnAddData([
+                        "Grade" + (currCourse.fnSettings().fnRecordsTotal() + 1),
+                        grade
+                    ]);
+					recreateGradeTable();
+                    $('#AddGradeDialog').dialog("close");
+                }
+				else
+				{
+					alert("Grade Not Added\nError: " + data);
+				}
             }
+        });
+    });
+
+    $('#AddGradeDialog').dialog({
+        modal: true,
+        close: function( event, ui ) {
+            $('#AddGradeDialog').remove();
         }
     });
 }
+*/
 
 function addAssesment()
 {
-    var assessment = $('#assesment').val();
-    var percentage = $('#percentage').val();
-    $.ajax({
-        type: 'POST',
-        url: 'tabs.php',
-        data: {
-            action: 'add',
-            course: course,
-            assesment: assessment,
-            percentage: percentage
-        },
-        dataType: 'text',
-        success: function(data) {
-            if(data=="true")
-            {
-                //location.reload();
-                $('#tabs ul').append('<li><a href="#' + assessment + '"> ' + assessment + '</a></li>');
-                createDiv(assessment);
-                maintab.tabs("refresh");
+    var div = '';
+    div += '     <div id="AssessmentAddition" title="Add Assessment">';
+	div += '         <table>';
+	div += '             <thead>';
+	div += '                 <tr>';
+    div += '                     <td>Assessment Type:</td>' ;
+	div += '                     <td><input type="text" id="assesment"></td>';
+	div += '                 </tr>';
+	div += '                 <tr>';
+	div += '                     <td>Percentage:</td>';
+	div += '                     <td><input type="text" id="percentage"></td>';
+	div += '                 </tr>';
+	div += '             </thead>';
+	div += '         </table>';
+    div += '         <button type="button" id="subAsses">Submit</button>';
+    $('#addTab').append(div);
+
+    $('#subAsses').click(function(){
+        var assessment = $('#assesment').val();
+		var assessmentNoSpace = removeSpace(assessment);
+        var percentage = $('#percentage').val();
+        $.ajax({
+            type: 'POST',
+            url: 'tabs.php',
+            data: {
+                action: 'add',
+                course: course,
+                assesment: assessment,
+                percentage: percentage
+            },
+            dataType: 'text',
+            success: function(data) {
+                if(data=="true")
+                {
+                    $('#tabs ul').append('<li><a href="#' + assessmentNoSpace + '"> ' + assessment + '</a></li>');
+                    createDiv(assessment);
+                    maintab.tabs("refresh");
+                    $('#AssessmentAddition').dialog("close");
+					gradeTable.fnAddData([
+                        assessment,
+                        "No Grades"
+                    ]);
+                }
+				else
+				{
+					alert("Assessment Not Added\nError: " + data);
+				}
             }
+        });
+    });
+
+    $('#AssessmentAddition').dialog({
+        modal: true,
+        width: "500px",
+        close: function( event, ui ) {
+            $('#AssessmentAddition').remove();
         }
     });
+}
+
+function recreateGradeTable()
+{
+	gradeTable.fnDestroy();
+
+	$.ajax({
+		type: 'POST',
+		url: 'tabs.php',
+		data: {
+		    action: 'GetAllAssessments',
+	        course: course
+	    },
+		dataType: 'json',
+		success: function(data) {
+		    gradeTable = $('#allAssess').dataTable({
+		        "aaData": data,
+		        "aoColumns": [
+		            {"sTitle": "Assessment"},
+		            {"sTitle": "Cumulative Average"}
+		        ],
+		        "bJQueryUI": true,
+		        "bAutoWidth": false,
+		        "sPaginationType": "full_numbers",
+				retrieve: true
+		    });
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+		    alert(errorThrown);
+		}
+	});
+}
+
+function createHelp()
+{
+	var div = '';
+	div += '<div id="help">';
+	div += '    <p>The purpose of this page is to help students keep track of the grades in their class. In every class the professor has some list of assessment types such as homework, quizes, and test for which each assessment of the type has the same value. So, for instance, a professor might put in his syllabus that homework is worth 30% of the grade, exams are worth 60% and participation is 10%. The student can make a bucket for homework, exam, and participation and add grades for each of those assessment types as shown below.</p>';
+	div += '<p>If two assessments have different weights putting them under the same assessment types will give incorrect values for grade. For instance if a professor puts in their syllabus that exam 1 is worth 20% but exam 2  is worth 30% two different assessments tabs called exam 1 and exam 2 can be creadted but making one assessment tab called exam would give an incorrect grade calculation.</p>';
+	div += '<p>Once the assessment type is created grades can be inserted, deleted or modified as needed and the grade calculation will change accordingly as shown below.</p>';
+	div += '</div>';
+	$('#tabs').append(div);
+}
+
+function removeSpace(string)
+{
+	var substrings = string.split(" ");
+	string = "";
+	for(var i = 0; i < substrings.length; i++)
+	{
+		string = string.concat(substrings[i]);
+	}
+	return string;
 }
 
 function getUrlVars() {
