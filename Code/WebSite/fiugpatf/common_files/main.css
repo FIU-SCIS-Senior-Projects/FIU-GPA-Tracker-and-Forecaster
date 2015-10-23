@@ -162,3 +162,44 @@ ul ol {
 .name {
 	margin-left: 1em;
 }
+
+.breakdownButton {
+	width: 15em;
+	margin-bottom: 3px;
+}
+
+#ajax1_paginate a {
+	margin-left: 2px;
+	margin-right: 2px;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+#title {
+	display: table;
+	margin: auto;
+	font-family: "Arial";
+}
+
+#current_course {
+	font-family: "Arial";
+}
+
+.tabButton{
+	width: 15em;
+	margin-top: 3px;
+	margin-bottom: 3px;
+}
+
+#tabs {
+	font-family: "Arial";
+}
+
+.dataTables_wrapper div a{
+	margin-left: 2px;
+	margin-right: 2px;
+	padding-left: 1px;
+	padding-right: 1px;
+}
+
+

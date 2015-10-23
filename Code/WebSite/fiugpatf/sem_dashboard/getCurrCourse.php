@@ -46,7 +46,7 @@ if($action == "currCourses") {
         $stmt->bind_result($coid, $con, $credit);
         $output = array();
         while ($stmt->fetch()) {
-            array_push($output, array($coid, $con, $credit));
+            array_push($output, array($coid, $con, $credit, getGrade($user, $coid)));
         }
         echo json_encode($output);
 
@@ -68,16 +68,70 @@ if($action == 'remove')
     }
 }
 
-if($action == 'add_breakdown')
+if($action == 'exportData')
 {
-
+	if(isset($_SESSION['username']))
+	{
+		$user = $_SESSION['username'];
+		$output = shell_exec('mysqldump --user=root --password=sqliscool --host=localhost --no-create-info GPA_Tracker student_data --where="Username = \'' . $user . '\'" student_course --where="username=\'' . $user . '\'" student_major --where="username=\'' . $user . '\'" assessment_type --where="username=\'' . $user . '\'" assessment --where="username=\'' . $user . '\'"');
+		echo $output;
+	}
 }
 
-if(isset($_GET['action']))
+function getGrade($user, $course)
 {
-    if($_GET['action'] = table)
-    {
+	$mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
+    $stmt = $mysqli->prepare("SELECT assessment, percentage
+                              FROM   assessment_type
+                              WHERE  username = ? and courseID = ?");
+    $stmt->bind_param('ss', $user, $course);
+    $stmt->execute();
+    $stmt->bind_result($bucket, $per);
 
+    $average = 0;
+    $grade;
+    $totalPer = 0;
+    while($stmt->fetch())
+    {
+        $grade = averageAssess($bucket, $user, $course);
+        if($grade != " ")
+        {
+            $average += $grade * $per;
+            $totalPer += $per;
+        }
+    }
+
+    if($totalPer == 0)
+    {
+        return "No Grades";
+    }
+    else{
+        return $average/$totalPer;
+    }
+}
+
+function averageAssess($category, $user, $course)
+{
+    $conn = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
+    $stmt = $conn->prepare("SELECT grade
+                                  FROM   assessment
+                                  WHERE  username = ? and courseID = ? and assessment = ?");
+    $stmt->bind_param('sss', $user, $course, $category);
+    $stmt->execute();
+    $stmt->bind_result($Assessgrade);
+    $runAvg = 0;
+    $count = 0;
+    while($stmt->fetch())
+    {
+        $runAvg += $Assessgrade;
+        $count++;
+    }
+    if($count != 0)
+    {
+        return round($runAvg / $count, 2);
+    }
+    else{
+        return " ";
     }
 }
 ?>

@@ -23,8 +23,9 @@ if(isset($_SESSION['username']))
     }
 
     echo "<li><a href=\"../overallgpadashboard/OvrlDash.html\">GPA Dashboard</a></li>";
-    echo "<li><a href=\"./current.html\">Grade Dashboard</a></li>";
-    echo "<li><a href=\"../login.html\">Logout</a></li>";
+    echo "<li><a href=\"./current.html\">Semester Dashboard</a></li>";
+	echo "<li><a href=\"../common_files/settings.html\">Settings</a></li>";
+    echo "<li><a href=#>Logout</a></li>";
 }
 else
 {
