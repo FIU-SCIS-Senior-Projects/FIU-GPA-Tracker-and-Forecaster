@@ -27,7 +27,7 @@ if(isset($_SESSION['username']))
     echo "<li><a href=\"../sem_dashboard/current.html\">Semester Dashboard</a></li>";
 	echo "<li><a href=\"../common_files/settings.html\">Settings</a></li>";
 
-    echo "<li><a href=#>Logout</a></li>";
+    echo "<li><a href=\"login.html\">Logout</a></li>";
 }
 else
 {

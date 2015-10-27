@@ -3,15 +3,18 @@
 
 <head>
     <title>FIU GPA Tracker</title>
+	 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
     <script src="https://cdn.datatables.net/plug-ins/1.10.9/api/fnReloadAjax.js"></script>
     <link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" />
+	 <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link type="text/css" rel="stylesheet" href="main2.css" />
     <script type="text/javascript" src="nav.js"></script>
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/overcast/jquery-ui.css" />
-
+	 
 
     <script type='text/javascript' src='OvrlDash.js'></script>
 </head>
@@ -30,6 +33,15 @@
                     <li><a href="../sem_dashboard/current.html">Grade Dashboard</a></li>
 						  <li><a href="../common_files/settings.html">Settings</a></li>
                     <li><a href="../login.html">Logout</a></li>
+						   <li><div  class="dropdown">
+    <a class="btn btn-default dropdown-toggle"  data-toggle="dropdown">Help
+    <span class="caret"></span></a>
+    <ul style = "margin-top: 1px;" class = "dropdown-menu">
+      <li><a href="OvrlDash_help.html">GPA Dashboard Help</a></li>
+      <li><a href="#">Grade Dashboard Help</a></li>
+      <li><a href="about.html">About</a></li>
+    </ul>
+  </div></li>
                 </ul>
             </div>
         </div>
@@ -39,7 +51,7 @@
             <div class="screenPrivacy">
                <p> screen privacy </p>
 					<div class="onoffswitch">
-    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch" checked>
+    <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="myonoffswitch">
     <label class="onoffswitch-label" for="myonoffswitch">
         <span class="onoffswitch-inner"></span>
         <span class="onoffswitch-switch"></span>
@@ -73,7 +85,7 @@
         <div class="tables">
             <div class="GPATable">
 
-                <table  id="coursesTaken" cellspacing="0" width="100%">
+                <table  id="coursesTaken" border = "1" cellspacing="0" width="100%">
 
 
                     <thead class="tableHead">
@@ -152,10 +164,10 @@
 
             <ul id="impfore">
                 <li>
-                    <button href="">IMPORT</button>
+               <!--     <button href="">IMPORT</button>-->
                 </li>
                 <li>
-                    <button href="">FORECAST</button>
+                <!--    <button href="">FORECAST</button>-->
                 </li>
             </ul>
 

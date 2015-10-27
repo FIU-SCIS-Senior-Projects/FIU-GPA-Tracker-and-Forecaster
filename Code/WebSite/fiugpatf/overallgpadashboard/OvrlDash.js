@@ -1,11 +1,5 @@
  $(document).ready(function() {
-
-
      start();
-
-
-
-
  });
 
 
@@ -884,7 +878,7 @@
          },
          success: function(data) {
 
-             $('#GPATable').html('<table cellpadding="0" cellspacing="0" border="0" style="width:95%" class="display" id="coursesTaken"></table>');
+   //          $('.GPATable').html('<table cellpadding="0" cellspacing="0" border="1" style="width:95%" class="display" id="coursesTaken"></table>');
 
              var gradepoints = 0;
              var credithours = 0;
@@ -1126,7 +1120,7 @@
          },
          success: function(data) {
 
-
+ // $('.futureCoursesTable').html('<table cellpadding="0" cellspacing="0" border="1" style="width:95%" class="display" id="coursesNeeded"></table>');
 
              courseNeeded = $('#coursesNeeded').dataTable({
                  "aaData": data,

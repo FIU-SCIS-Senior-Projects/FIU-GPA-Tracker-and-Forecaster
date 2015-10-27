@@ -1,6 +1,6 @@
 <?php
-include_once 'common_files/psl-config.php';
-include_once 'common_files/functions.php';
+include_once 'psl-config.php';
+include_once 'functions.php';
 
 sec_session_start();
 

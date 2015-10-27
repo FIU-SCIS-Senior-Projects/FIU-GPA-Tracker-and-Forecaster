@@ -2,7 +2,15 @@
 <html>
 	<head>
 		<title>FIU GPA Tracker</title>
-		<link type="text/css" rel="stylesheet" href="main.css"/>
+	 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+   <script src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+   <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+	<script src="https://cdn.datatables.net/plug-ins/1.10.9/api/fnReloadAjax.js"></script>
+	<link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css" />
+	<link type="text/css" rel="stylesheet" href="../common_files/main.css"/>
+	<link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/themes/overcast/jquery-ui.css" />
+	<script type="text/javascript" src="nav.js"></script>
+	<script type='text/javascript' src='insert_course.js'></script>
 	</head>
 	<body>
 		<div class="yellowBar"></div>
@@ -10,13 +18,10 @@
 			<div class="headerLinks" class="container clearfix">
 				<div class="logo">
 					<img class="logo" src="http://www.fiu.edu/_assets/images/core/fiu-logo-large.png" />
-					<a href=index.html>GPA Tracker and Forecaster</a>
+					<a href=../index.html>GPA Tracker and Forecaster</a>
 				</div>
 				<div class="nav">
-					<ul>
-						<li><a href="register.html">Register</a></li>
-						<li><a href="login.html">Log in</a></li>
-						<li><a href=#>About</a></li>
+					<ul id="nav">
 					</ul>
 				</div>
 			</div>
@@ -48,5 +53,21 @@
 				<input type="submit" value="Submit">
 			</form>
 		</div>
+	   <div class="masterCourseMod">
+                <table  id="courseModTable" border = "1" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th colspan="3">Courses to Mod</th>
+                        </tr>
+                        <tr>
+                            <td> </td>
+                            <td> </td>
+                            <td> </td>
+                        </tr>
+                    </thead>
+                    <tbody >
+                    </tbody>
+                </table>
+            </div>
 	</body>
 </html>
