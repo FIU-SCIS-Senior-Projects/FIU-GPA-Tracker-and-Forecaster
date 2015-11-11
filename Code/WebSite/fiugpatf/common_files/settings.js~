@@ -51,6 +51,7 @@ function exportData()
 	});
 }
 
+<<<<<<< HEAD
 function importData()
 {
 	document.getElementById("ImportFile").click();
@@ -137,6 +138,8 @@ function importWhatif()
 
 }
 
+=======
+>>>>>>> Story 733: Current Semester GUI improvements Set 1
 function download(filename, text) {
    var pom = document.createElement('a');
    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));

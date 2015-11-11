@@ -6,6 +6,22 @@ sec_session_start();
 
 if(isset($_SESSION['username']))
 {
+    $username = $_SESSION['username'];
+    $conn = new mysqli(HOST, USER, PASSWORD, DATABASE);
+    if($stmt = $conn->prepare("SELECT *
+                               From admin
+                               Where username = ?")) {
+        $stmt->bind_param('s', $username);
+        $stmt->execute();
+        $stmt->store_result();
+        $stmt->bind_result($username);
+        $stmt->fetch();
+
+        if ($stmt->num_rows() > 0) {
+            echo "<li><a href=#>Admin</a></li>";
+        }
+    }
+
     echo "<li><a href=\"../overallgpadashboard/OvrlDash.html\">GPA Dashboard</a></li>";
     echo "<li><a href=\"./current.html\">Semester Dashboard</a></li>";
 	echo "<li><a href=\"../common_files/settings.html\">Settings</a></li>";

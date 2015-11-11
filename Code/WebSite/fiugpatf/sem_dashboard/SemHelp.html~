@@ -66,7 +66,7 @@
             float: left;
             }
             .pushRight{
-            margin-right:140px;
+            margin-right:125px;
             }
 
         </style>
