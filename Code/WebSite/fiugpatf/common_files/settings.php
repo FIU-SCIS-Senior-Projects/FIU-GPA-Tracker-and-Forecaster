@@ -33,11 +33,8 @@ if($action == "prepareTable") {
 		array_push($output, array("Change Major", ""));
 		array_push($output, array("Change Themes", ""));
 		array_push($output, array("Export Data", '<button type="button" id="ExportButton">Export Data</button>'));
-<<<<<<< HEAD
 		array_push($output, array("Import Data", '<input type="file" id="ImportFile">'));
 		//array_push($output, array("Import Whatif", '<input type="file" id="Whatif">'));
-=======
->>>>>>> Story 733: Current Semester GUI improvements Set 1
 
 		echo json_encode($output);
 	}
@@ -45,12 +42,27 @@ if($action == "prepareTable") {
 
 if($action == "exportData") {
 	if (isset($_SESSION['username'])) {
-		$user = $_SESSION['username'];
-		$dump = shell_exec('mysqldump --user=root --password=sqliscool --host=localhost --no-create-info --xml GPA_Tracker student_data --where="Username = \'' . $user . '\'" student_course --where="username=\'' . $user . '\'" student_major --where="username=\'' . $user . '\'" assessment_type --where="username=\'' . $user . '\'" assessment --where="username=\'' . $user . '\'"');
-		echo $dump;
+		$user = $_SESSION['userID'];
+		$user = 2; //Test purposes only
+		$mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
+        $stmt = $mysqli->prepare("SELECT studentCourseID
+        FROM StudentCourse
+        WHERE userID=?");
+        $stmt->bind_param('s', $user);
+        $stmt->execute();
+        $stmt->bind_result($studentCourse);
+        $courseList = "(";
+        while($stmt->fetch())
+        {
+        	$courseList = $courseList . $studentCourse . ", ";
+        }
+        $courseList = substr($courseList, 0, (strlen($courseList) - 2));
+        $courseList = $courseList . ")";
+		$dump1 = shell_exec('mysqldump --user=root --password=sqliscool --host=localhost --no-create-info --xml GPA_Tracker Users  StudentCourse StudentMajor --where="userID=' . $user . '"');
+		$dump2 = shell_exec('mysqldump --user=root --password=sqliscool --host=localhost --no-create-info --xml GPA_Tracker AssessmentType Assessment --where="studentCourseID in ' . $courseList .'"');
+		echo cutLastLine(cutLastLine(cutLastLine($dump1))) . "\n" . cutFirstLine(cutFirstLine(cutFirstLine($dump2)));
 	}
 }
-<<<<<<< HEAD
 
 if($action == "importData") {
 	if(isset($_SESSION['username'])){
@@ -70,7 +82,7 @@ if($action == "importData") {
 				}
 				else
 				{
-					echo "Error!";
+					echo "Error! Cannot insert for another student.";
 				}
 			}
 			else {
@@ -113,52 +125,92 @@ if($action == "importData") {
 	}
 }*/
 
+function cutLastLine($string)
+{
+	return substr($string, 0, strrpos($string, "\n"));
+}
+
+function cutFirstLine($string)
+{
+	return substr(strstr($string, "\n"), 1);
+}
+
+function isIn($course, $courseList)
+{
+	for($i =0; $i < count($courseList); $i++)
+	{
+		if($course == $courseList[$i])
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 function validate_and_insert_data($xml)
 {
 	$mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
-	$user = $_SESSION['username'];
+	$user = $_SESSION['userID'];
+	$user = 2; //For test purposes
+	$coursesSet = false;
 	foreach($xml->database[0]->children() as $table_data)
 	{
 		foreach($table_data->children() as $rows)
 		{
-			if($table_data['name'] == 'student_data')
+			if($table_data['name'] == 'StudentData')
 			{
 				if($rows->field[1] != $user)
 				{
 					return false;
 				}
 			}
-			else if($table_data['name'] == 'student_course')
+			else if($table_data['name'] == 'StudentCourse')
 			{
-				if($rows->field[0] != $user)
+				if($rows->field[8] != $user)
 				{
 					return false;
 				}
-				$stmt = $mysqli->prepare("INSERT INTO student_course (username, courseID, grade, weight, relevance, student_course_id, semester, year) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+				$stmt = $mysqli->prepare("INSERT INTO StudentCourse (grade, weight, relevance, studentCourseID, semester, year, courseInfoID, selected, userID) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
                                           ON DUPLICATE KEY UPDATE grade=VALUES(grade), weight=VALUES(weight), relevance=VALUES(relevance)");
-				$stmt->bind_param('ssssssss', $user, $rows->field[1], $rows->field[2], $rows->field[3], $rows->field[4], $rows->field[5], $rows->field[6], $rows->field[7]);
+				$stmt->bind_param('sssssssss', $rows->field[0], $rows->field[1], $rows->field[2], $rows->field[3], $rows->field[4], $rows->field[5], $rows->field[6], $rows->field[7], $user);
     			$stmt->execute();
 			}
-			else if($table_data['name'] == 'student_major')
+			else if($table_data['name'] == 'StudentMajor')
 			{
 				if($rows->field[0] != $user)
 				{
 					return false;
 				}
-				$stmt = $mysqli->prepare("INSERT INTO student_major (username, major_id, declared_month, declared_year) VALUES (?, ?, ?, ?)
-                                          ON DUPLICATE KEY UPDATE declared_month=VALUES(declared_month), declared_year=VALUES(declared_year)");
-				$stmt->bind_param('ssss', $user, $rows->field[1], $rows->field[2], $rows->field[3]);
+				$stmt = $mysqli->prepare("INSERT INTO StudentMajor (userID, majorID, declaredDate) VALUES (?, ?, ?)
+                                          ON DUPLICATE KEY UPDATE declaredDate=VALUES(declaredDate)");
+				$stmt->bind_param('ssss', $user, $rows->field[1], $rows->field[2]);
     			$stmt->execute();
 			}
-			else if($table_data['name'] == 'assessment_type')
+			else if($table_data['name'] == 'AssessmentType')
 			{
-				if($rows->field[0] != $user)
+				if(!$coursesSet)
+				{
+				    $mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
+					$stmt = $mysqli->prepare("SELECT studentCourseID
+					FROM StudentCourse
+					WHERE userID=?");
+					$stmt->bind_param('s', $user);
+					$stmt->execute();
+					$stmt->bind_result($studentCourse);
+					$courseList = array();
+					while($stmt->fetch())
+					{
+						array_push($courseList, $studentCourse);
+					}
+					$coursesSet = true;
+				}
+				if(!isIn($rows->field[2], $courseList))
 				{
 					return false;
 				}
-				$stmt = $mysqli->prepare("INSERT INTO assessment_type (courseID, assessment, percentage, student_course_id) VALUES (?, ?, ?, ?)
-                                          ON DUPLICATE KEY UPDATE assessment=VALUES(assessment), percentage=VALUES(percentage)");
-				$stmt->bind_param('ssss', $rows->field[1], $rows->field[2], $rows->field[3], $rows->field[4]);
+				$stmt = $mysqli->prepare("INSERT INTO AssessmentType (assessmentName, percentage, studentCourseID, AssessmentTypeID) VALUES (?, ?, ?, ?)
+                                          ON DUPLICATE KEY UPDATE assessmentName=VALUES(assessmentName), percentage=VALUES(percentage)");
+				$stmt->bind_param('ssss', $rows->field[0], $rows->field[1], $rows->field[2], $rows->field[3]);
     			$stmt->execute();
 			}
 		}
@@ -180,6 +232,4 @@ function validate_and_insert_data($xml)
 		}
 	}
 }*/
-=======
->>>>>>> Story 733: Current Semester GUI improvements Set 1
-?>
+
