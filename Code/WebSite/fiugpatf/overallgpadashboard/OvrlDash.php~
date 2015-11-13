@@ -312,7 +312,7 @@ if ($action == "deleteItem") {
         );
 		
     }
-    $sql  = "DELETE FROM StudentCourse WHERE userID = '" . $userID . "' AND courseInfoID = '" . $course[0] . "' ";
+    $sql  = "DELETE FROM StudentCourse WHERE userID = '" . $userID[0] . "' AND courseInfoID = '" . $course[0] . "' ";
     if ($mysqli->query($sql) === TRUE) {
         //mysql_query($sql);
         $result = array(

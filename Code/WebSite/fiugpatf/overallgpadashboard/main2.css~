@@ -312,17 +312,7 @@ thead tr {
 }
 
 #coursesNeeded {
-   column-width: 30px;
-}
-
-#parentTable{
     column-width: 30px;
-
-}
-
-#parentTableTaken{
-  column-width: 30px;
-
 }
 
 .tableHead th {

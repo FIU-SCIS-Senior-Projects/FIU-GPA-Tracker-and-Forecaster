@@ -41,7 +41,7 @@ if($action == "prepareTable") {
 if($action == "exportData") {
 	if (isset($_SESSION['username'])) {
 		$user = $_SESSION['username'];
-		$dump = shell_exec('mysqldump --user=root --password=sqliscool --host=localhost --no-create-info --xml GPA_Tracker student_data  student_course  student_major  assessment_type assessment ');
+		$dump = shell_exec('mysqldump --user=root --password=sqliscool --host=localhost --no-create-info --xml GPA_Tracker Users  StudentCourse  StudentMajor  AssessmentType Assessment ');
 		echo $dump;
 	}
 }

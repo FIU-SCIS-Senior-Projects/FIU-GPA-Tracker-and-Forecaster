@@ -941,7 +941,11 @@ childTableTakenE.fnOpen(nTr, sto_formatStoreManagerDetails(childTableTakenE, nTr
              if (data.success) {
                  oTable.fnClose(nTr);
                  oTable.fnDeleteRow(nTr);
-                
+                 var oSettings = $('#coursesTaken').dataTable()
+                     .fnSettings();
+                 var rowCount = oSettings.fnRecordsTotal();
+                 var gradesForGPA = [];
+                 var creditsForGPA = [];
              } else {
                  $(nTr).css("color", "");
                  oTable.fnClose(nTr);
