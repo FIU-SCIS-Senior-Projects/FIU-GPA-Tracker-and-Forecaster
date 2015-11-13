@@ -109,7 +109,7 @@
 				<div class="tableOfC">
 		        	<ol type="I">
 		            	<li id = "s2"><a>Current semester dashboard</a></li>
-		                <li id = "s3"><a>Current semester dashboard Dropdown</a></li>
+		                <li id = "s3"><a>Current semester dashboard slidedown</a></li>
 		                <li id = "s4"><a>Deleteing a course</a></li>
 		                <li id = "s5"><a>Semester Dashboard</a></li>
 		                <li id = "s6"><a>Adding assessment group</a></li>
