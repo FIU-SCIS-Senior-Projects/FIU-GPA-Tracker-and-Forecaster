@@ -1,4 +1,6 @@
 $(document).ready(function() {
+	//$.ajax({ url: 'www.google.com', success: function(data) { alert(data); } });
+	$.ajax({ url: 'register.html', success: function(data) { alert(data); } });
     start();
 } );
 

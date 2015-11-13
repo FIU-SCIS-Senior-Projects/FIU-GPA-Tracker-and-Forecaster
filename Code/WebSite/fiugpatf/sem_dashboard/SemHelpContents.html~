@@ -39,16 +39,15 @@
             <div class="logo">
                 <img class="logo" src=
                 "http://www.fiu.edu/_assets/images/core/fiu-logo-large.png">
-                <a href="OvrlDash.html">Overall GPA Dashboard</a>
+                <a href="../overallgpadashboard/OvrlDash.html">Overall GPA Dashboard</a>
             </div>
             <div class="nav">
                 <ul>
                     <li>
-                        <a href="OvrlDash.html">GPA Dashboard</a>
+                        <a href="../overallgpadashboard/OvrlDash.html">GPA Dashboard</a>
                     </li>
                     <li>
-                        <a href="../sem_dashboard/current.html">Grade
-                        Dashboard</a>
+                        <a href="/current.html">Semseter Dashboard</a>
                     </li>
                     <li>
                         <a href="../common_files/settings.html">Settings</a>
@@ -66,10 +65,10 @@
                                     <a href="../overallgpadashboard/OvrlDash_help_contents.html">GPA Dashboard Help</a>
                                 </li>
                                 <li>
-                                    <a href="#">Semester Dashboard Help</a>
+                                    <a href=#>Semester Dashboard Help</a>
                                 </li>
                                 <li>
-                                    <a href="about.html">About</a>
+                                    <a href="../overallgpadashboard/about.html">About</a>
                                 </li>
                             </ul>
                         </div>
@@ -80,9 +79,9 @@
     </div>
     <div class="jumbotronOVRLabout">
         <div class="textboxAbout">
-            <h3>GPA DASHBOARD HELP</h3><br><br>
+            <h3>SEMESTER DASHBOARD HELP</h3><br><br>
             <ol type = "I">
-					<li><a href ="OvrlDash_help_description.html">WHAT IS THE SEMESTER DASHBOARD?</a></li><br>
+					<li><a href ="SemHelpDescription.html">WHAT IS THE SEMESTER DASHBOARD?</a></li><br>
 					<li><a href ="SemHelp.html">HOW TO USE THE SEMESTER DASHBOARD</a></li>
 				</ol>
         </div>
