@@ -47,7 +47,7 @@
                         <a href="OvrlDash.html">GPA Dashboard</a>
                     </li>
                     <li>
-                        <a href="../sem_dashboard/current.html">Semester
+                        <a href="../sem_dashboard/current.html">Grade
                         Dashboard</a>
                     </li>
                     <li>
@@ -63,10 +63,10 @@
                             "caret"></span></a>
                             <ul class="dropdown-menu" style="margin-top: 1px;">
                                 <li>
-                                    <a href="#">GPA Dashboard Help</a>
+                                    <a href="OvrlDash_help_contents.html">GPA Dashboard Help</a>
                                 </li>
                                 <li>
-                                    <a href="../sem_dashboard/SemHelpContents.html">Semester Dashboard Help</a>
+                                    <a href="#">Grade Dashboard Help</a>
                                 </li>
                                 <li>
                                     <a href="about.html">About</a>
@@ -80,11 +80,8 @@
     </div>
     <div class="jumbotronOVRLabout">
         <div class="textboxAbout">
-            <h3>GPA DASHBOARD HELP</h3><br><br>
-            <ol type = "I">
-					<li><a href ="OvrlDash_help_description.html">WHAT IS THE GPA DASHBOARD?</a></li><br>
-					<li><a href ="OvrlDash_help.html">HOW TO USE THE GPA DASHBOARD</a></li>
-				</ol>
+            <h3>THE GPA DASHBOARD</h3><p>The GPA Dashboard allows students to track their academic progress throughout their time at FIU and compare their calculated GPA to the GPA required for their target graduate program. Students will have the option to receive an indiviualized forecast upon assigning a value to the weight and relevance of classes they are going to take. The forecast generates the appropriate grades for each class that a student should strive for. 
+</p> 
         </div>
     </div>
     <div class="footer"></div>

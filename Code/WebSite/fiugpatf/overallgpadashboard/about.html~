@@ -47,7 +47,7 @@
                         <a href="OvrlDash.html">GPA Dashboard</a>
                     </li>
                     <li>
-                        <a href="../sem_dashboard/current.html">Grade
+                        <a href="../sem_dashboard/current.html">Semester
                         Dashboard</a>
                     </li>
                     <li>
@@ -67,7 +67,7 @@
                                     Help</a>
                                 </li>
                                 <li>
-                                    <a href="#">Grade Dashboard Help</a>
+                                    <a href="../sem_dashboard/SemHelpContents.html">Semester Dashboard Help</a>
                                 </li>
                                 <li>
                                     <a href="about.html">About</a>
