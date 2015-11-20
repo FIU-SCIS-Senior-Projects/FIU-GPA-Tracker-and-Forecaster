@@ -70,7 +70,7 @@ else {
                                                                 "", 
                                                                 $username);
                     $_SESSION['username'] = $username;
-						  $_SESSION['userID'] = $userID;
+					$_SESSION['userID'] = $userID;
                     $_SESSION['login_string'] = hash('sha512', 
                               $password . $user_browser);
                     // Login successful.

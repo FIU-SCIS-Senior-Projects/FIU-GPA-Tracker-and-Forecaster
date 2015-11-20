@@ -176,8 +176,8 @@ function createDiv(assessment)
                 var sOut = '';
                 sOut += '<div id="' + assessmentNoSpace +'Details'+id+'">';
                 sOut += '    <div class="buttonColumnDetails">';
-                sOut += '        <button class="breakdownButton" id="' + assessmentNoSpace + 'Remove'+id+'">Remove</button><br>';
-                sOut += '        <button class="breakdownButton" id="' + assessmentNoSpace + 'Modify'+id+'">Modify</button><br>';
+                sOut += '        <button id="' + assessmentNoSpace + 'Remove'+id+'">Remove</button><br>';
+                sOut += '        <button id="' + assessmentNoSpace + 'Modify'+id+'">Modify</button><br>';
                 sOut += '    </div>';
                 sOut += '</div>';
                 return sOut;

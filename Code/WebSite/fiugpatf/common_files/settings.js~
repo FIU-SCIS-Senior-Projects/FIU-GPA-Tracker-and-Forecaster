@@ -1,6 +1,4 @@
 $(document).ready(function() {
-	//$.ajax({ url: 'www.google.com', success: function(data) { alert(data); } });
-	//$.ajax({ url: 'register.html', success: function(data) { alert(data); } });
     start();
 } );
 
@@ -29,7 +27,26 @@ function start() {
 			});
 			
 			importData();
-			//importWhatif();
+			
+
+			$('#DeleteButton').click(function(){
+				var del = confirm("Delete all data?");
+    			if (del == true) {
+					deleteData();
+				}
+			});
+			
+			$('#PDFimport').ajaxForm();
+			var control = document.getElementById("Whatif");
+				control.addEventListener("change", function(){
+					$('#PDFimport').ajaxSubmit();
+				}, false);
+			
+			$('#Reqimport').ajaxForm();
+			var control = document.getElementById("ImportReqirments");
+				control.addEventListener("change", function(){
+					$('#Reqimport').ajaxSubmit();
+				}, false);
         }
     });
 }
@@ -53,6 +70,25 @@ function exportData()
 	});
 }
 
+
+function deleteData()
+{
+	$.ajax({
+        type: 'POST',
+        url: 'settings.php',
+        data: {
+            action: 'deleteData'},
+        dataType: 'text',
+        success: function(data) {
+			if(data.length > 0){
+				alert("Data deleted.");
+			}
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+		    alert(errorThrown);
+		}
+	});
+}
 function importData()
 {
 	document.getElementById("ImportFile").click();

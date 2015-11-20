@@ -23,11 +23,7 @@ session_start();
 //For test purposes only
 if(!isset($_SESSION['userID']))
 {
-	$mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
-	$stmt = $mysqli->prepare("Select userID from Users where username = 'mdoe'");
-	$stmt->execute();
-	$stmt->bind_result($ui);
-	$_SESSION['userID'] = $ui;
+	$_SESSION['userID'] = 2;
 }
 
 if($_POST['action'] == 'tabs')
@@ -279,13 +275,13 @@ if($_POST['action'] == 'GetAllAssessments')
             $grade = averageAssess($bucket);
             if($grade != "No Grades")
             {
-				array_push($output, array($bucket, round($grade, 2)));
+				array_push($output, array($bucket, $per, round($grade, 2)));
                 $average += $grade * $per;
                 $totalPer += $per;
             }
 			else
 			{
-				array_push($output, array($bucket, $grade));
+				array_push($output, array($bucket, $per, $grade));
 			}
         }
 
@@ -294,7 +290,7 @@ if($_POST['action'] == 'GetAllAssessments')
             array_push($output, array("Total", "No Grades"));
         }
         else{
-            array_push($output, array("Total", round($average/$totalPer, 2)));
+            array_push($output, array("Total", "", round($average/$totalPer, 2)));
         }
 
 
