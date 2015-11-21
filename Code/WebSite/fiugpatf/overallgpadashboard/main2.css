@@ -314,17 +314,17 @@ thead tr {
 #coursesNeeded {
    column-width: 30px;
 }
-
+/*
 #parentTable{
     column-width: 30px;
-
+	table-layout:fixed;
 }
 
 #parentTableTaken{
   column-width: 30px;
 
 }
-
+*/
 .tableHead th {
     font-family: Georgia,Serif;
     background-color: #7382b5;
@@ -696,4 +696,5 @@ ul.dropdown-menu {
 
 
 }
+
 
