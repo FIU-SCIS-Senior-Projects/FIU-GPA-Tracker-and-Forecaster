@@ -6,6 +6,7 @@
      $("#coursesTaken tbody td:nth-child(3) ").toggle();
      $(".GPACalcBox p:nth-child(2)").toggle();
  }
+  var childTableDTNeededCourses;
  var childTableDTNeeded;
  var childTableDT;
  var childTableTakenE
@@ -53,7 +54,7 @@ var append = false;
 
 function sto_formatDataTable(oTable, nTr) {
      var aData = oTable.fnGetData(nTr);
-     var id = aData[1];
+     var id = removeSpace(aData[1]);
      var sOut = '';
 	   sOut += '<table id ="coursesTakenDT">';//'<div id="itemDetails' + id + '">';
      sOut += '<thead><tr><th></th><th></th><th></th></tr></thead>'; //'	<div class="buttonColumnDetails">';
@@ -65,9 +66,9 @@ function sto_formatDataTable(oTable, nTr) {
 
 function sto_formatDataTableNeeded(oTable, nTr) {
      var aData = oTable.fnGetData(nTr);
-     var id = aData[1];
+     var id = removeSpace(aData[1]);
      var sOut = '';
-	   sOut += '<table id ="coursesNeededDT">';//'<div id="itemDetails' + id + '">';
+	   sOut += '<table id ="coursesNeededDT'+id+'">';//'<div id="itemDetails' + id + '">';
      sOut += '<thead><tr><th></th><th></th><th></th><th></th></tr></thead>'; //'	<div class="buttonColumnDetails">';
      sOut += '<tbody></tbody></table>';//'		<button id="modifyItem' + id + '">Modify</button>';
    
@@ -77,20 +78,54 @@ function sto_formatDataTableNeeded(oTable, nTr) {
 
 function sto_formatDataTableNeeded2(oTable, nTr) {
      var aData = oTable.fnGetData(nTr);
-     var id = aData[1];
+     var id = removeSpace(aData[1]);
      var sOut = '';
-	   sOut += '<table id ="coursesNeededDT">';//'<div id="itemDetails' + id + '">';
+	   sOut += '<table id ="coursesNeededDT'+id+'">';//'<div id="itemDetails' + id + '">';
      sOut += '<thead><tr><th></th><th></th><th></th><th></th><th></th></tr></thead>'; //'	<div class="buttonColumnDetails">';
      sOut += '<tbody></tbody></table>';//'		<button id="modifyItem' + id + '">Modify</button>';
    
 
      return sOut;
  }
-function sto_formatDataTableNaturalScience(oTable, nTr) {
+
+function sto_formatDataTableNeededChildBuckets(oTable, nTr) {
+     var aData = oTable.fnGetData(nTr);
+     var id = removeSpace(aData[1]);
+     var sOut = '';
+	   sOut += '<table id ="childBucketsDT'+id+'">';//'<div id="itemDetails' + id + '">';
+     sOut += '<thead><tr><th></th><th></th><th></th></tr></thead>'; //'	<div class="buttonColumnDetails">';
+     sOut += '<tbody></tbody></table>';
+   
+
+     return sOut;
+ }
+function sto_formatDataTableTakenChildBuckets(oTable, nTr) {
+     var aData = oTable.fnGetData(nTr);
+     var id = removeSpace(aData[1]);
+     var sOut = '';
+	   sOut += '<table id ="childBucketsDTTaken'+id+'">';//'<div id="itemDetails' + id + '">';
+     sOut += '<thead><tr><th></th><th></th><th></th></tr></thead>'; //'	<div class="buttonColumnDetails">';
+     sOut += '<tbody></tbody></table>';
+   
+
+     return sOut;
+ }
+function sto_formatDataTableNeededChildBuckets2(oTable, nTr) {
      var aData = oTable.fnGetData(nTr);
      var id = aData[1];
      var sOut = '';
-	   sOut += '<table id ="coursesNeededDT">';//'<div id="itemDetails' + id + '">';
+	   sOut += '<table id ="childBucketsDT2">';//'<div id="itemDetails' + id + '">';
+     sOut += '<thead><tr><th></th><th>subbuckets</th><th>all required</th></tr></thead>'; //'	<div class="buttonColumnDetails">';
+     sOut += '<tbody></tbody></table>';
+   
+
+     return sOut;
+ }
+function sto_formatDataTableNaturalScience(oTable, nTr) {
+     var aData = oTable.fnGetData(nTr);
+     var id = removeSpace(aData[1]);
+     var sOut = '';
+	   sOut += '<table id ="coursesNeededDT'+id+'">';//'<div id="itemDetails' + id + '">';
      sOut += '<thead><tr> <td><form action = "OvrlDash.php" method = "post" name = "courseID"><input id = "addExtraCourse" placeholder ="Course ID" size	= "8" type="text" name="courseAdded"></form></td> <td><input id ="addECButton" type = "submit" name = "Add" value = "Add" ></td> </tr><tr><th></th><th></th><th></th><th></th><th></th></tr></thead>'; //'	<div class="buttonColumnDetails">';
      sOut += '<tbody></tbody></table>';//'		<button id="modifyItem' + id + '">Modify</button>';
    
@@ -254,6 +289,18 @@ function sto_rowClickHandler5() {
          addArrow(childTable1, nTr);
      });
  }
+
+
+function removeSpace(string)
+{
+	var substrings = string.split(" ");
+	string = "";
+	for(var i = 0; i < substrings.length; i++)
+	{
+		string = string.concat(substrings[i]);
+	}
+	return string;
+}
 
  function sto_openDetailsRow4(nTr) {
      childTable2.fnOpen(nTr, sto_formatStoreManagerDetails2( childTable2,
@@ -1000,6 +1047,8 @@ var OvrlDashphpURL = 'OvrlDash.php';
                          "sTitle": ""
                      }, {
                          "sTitle": "Courses Taken"
+                     }, {
+                         "sTitle": "All Required"
                      }
                  ], order: [1, "asc"],
         columnDefs: [{
@@ -1030,15 +1079,158 @@ var OvrlDashphpURL = 'OvrlDash.php';
         courseTakenBuckets.fnClose(nTr);
          $(nTr).css("color", "");
      } else {
-        openBucket(nTr);
+      //  openBucket(nTr,courseTakenBuckets);
+			var aData =   courseTakenBuckets.fnGetData(nTr);
+			var bucket = aData[1];
+			
+			var OvrlDashphpURL = 'OvrlDash.php';
+		$.ajax({
+         type: 'POST',
+         url: OvrlDashphpURL,
+         dataType: 'json',
+         data: {
+             action: 'findChildBuckets',
+				 bucket: bucket
+				 
+         },
+         success: function(data) {
+if (data.success) {
+               //alert ("children found");
+					
+				   openChildBucketsTaken(nTr, courseTakenBuckets);
+						
+					
+             } else {
+               // alert ("no child buckets");
+						
+			
+        openBucket(nTr, courseTakenBuckets);
+		 
+             }           
+
+					
+         },
+         error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("course doesnt exist");             
+				alert(errorThrown);
+         }
+     });	
      }
  }
 
-function openBucket(nTr){
-		
-   courseTakenBuckets.fnOpen(nTr, sto_formatDataTable(courseTakenBuckets,
+function openChildBucketsTaken(nTr, oTable){
+		var aData =  oTable.fnGetData(nTr);
+	var bucket = aData[1];
+
+	var req = aData[2];
+
+  oTable.fnOpen(nTr, sto_formatDataTableTakenChildBuckets(oTable,
          nTr), "ui-state-highlight");
-	var aData =  courseTakenBuckets.fnGetData(nTr);
+	var childTableDTTaken = null;
+	
+var OvrlDashphpURL = 'OvrlDash.php';
+
+ $.ajax({
+         type: 'POST',
+         url: OvrlDashphpURL,
+         dataType: 'json',
+         data: {
+             action: 'getMajorBucketsChildBuckets',
+				 bucket: bucket
+         },
+         success: function(data) {
+						var bucketHTMLID = removeSpace(bucket);
+					//alert(bucketHTMLID);
+             childTableDTTaken = $('#childBucketsDTTaken'+bucketHTMLID ).dataTable({
+                 "aaData": data,
+                 "aoColumns": [{
+                     "sTitle": ""
+                 }, {
+                     "sTitle": "subbucket name"
+                 }, {
+                     "sTitle": "all required"
+                 }, ],
+                
+                 "bAutoWidth": false,
+                 "sPaginationType": "full_numbers",
+						 "retrieve": true
+		});		
+			  $('#childBucketsDTTaken'+ bucketHTMLID +' tbody tr td').off();
+             $('#childBucketsDTTaken' + bucketHTMLID +' tbody tr td').on('click', clickBucket2);
+			
+
+ function clickBucket2() {
+     var nTr = this.parentNode;
+		
+     var open = false;
+     try {
+         if ($(nTr).next().children().first().hasClass("ui-state-highlight"))
+             open = true;
+     } catch (err) {
+         alert(err);
+     }
+     if (open) {
+         /* This row is already open - close it */
+         childTableDTTaken.fnClose(nTr);
+         $(nTr).css("color", "");
+     } else {
+
+			var aData =    childTableDTTaken.fnGetData(nTr);
+			var bucket = aData[1];
+			
+			var OvrlDashphpURL = 'OvrlDash.php';
+		$.ajax({
+         type: 'POST',
+         url: OvrlDashphpURL,
+         dataType: 'json',
+         data: {
+             action: 'findChildBuckets',
+				 bucket: bucket
+				 
+         },
+         success: function(data) {
+if (data.success) {
+              // alert ("children found");
+					
+				   openChildBucketsTaken(nTr, childTableDTTaken);
+						
+					
+             } else {
+               // alert ("no child buckets");
+						var req = aData[2];
+			
+        openBucket(nTr, childTableDTTaken);
+		
+             }           
+
+					
+         },
+         error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("course doesnt exist");             
+				alert(errorThrown);
+         }
+     });			
+		
+     }
+ }
+
+
+},
+ error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert(errorThrown);
+         }
+
+     });
+
+
+}
+
+
+function openBucket(nTr, oTable){
+		
+  oTable.fnOpen(nTr, sto_formatDataTable(oTable,
+         nTr), "ui-state-highlight");
+	var aData = oTable.fnGetData(nTr);
 	var bucket = aData[1];
 	var childTableDT;
 var OvrlDashphpURL = 'OvrlDash.php';
@@ -1137,14 +1329,14 @@ function sto_openDetailsRowTaken(nTr) {
 
      });
 
-     var aData =  courseTakenBuckets.fnGetData(nTr);
+     var aData = oTable.fnGetData(nTr);
      $("#modifyItem" + aData[0]).button();
      $("#moveItem" + aData[0]).button();
      var divId = "#itemDetails" + aData[0];
      $("#modifyItem" + aData[0]).click(function() {
          $("#pop2").dialog();
          $('#pop2').on('dialogclose', function(event) {
-            courseTakenBuckets.fnClose(nTr);
+           oTable.fnClose(nTr);
              (divId).empty();
              $(nTr).css("color", "#c5dbec");
              $("#pop2").remove();
@@ -1153,15 +1345,15 @@ function sto_openDetailsRowTaken(nTr) {
      $("#modSubmit2").click(function() {
          nRelev = $("input[name=nRelev]").val();
          nWeight = $("input[name=nWeight]").val();
-         sto_modWeight( courseTakenBuckets, divId, nTr, nWeight, nRelev);
-          courseTakenBuckets.fnUpdate([aData[0], aData[1], nWeight, nRelev],
+         sto_modWeight( oTable, divId, nTr, nWeight, nRelev);
+          oTable.fnUpdate([aData[0], aData[1], nWeight, nRelev],
              nTr);
          $('#pop2').dialog('close');
      });
     
      $("#moveItem" + aData[0]).click(function() {
          $(nTr).css("color", "#c5dbec");
-         addArrow(courseTakenBuckets, nTr);
+         addArrow(oTable, nTr);
      });
 
 }
@@ -1197,8 +1389,6 @@ $.ajax({
                          "sTitle": "Courses Needed"
                      }, {
                          "sTitle": "All Required"
-                     }, {
-                         "sTitle": "Parent"
                      },
                  ], order: [1, "asc"],
         columnDefs: [{
@@ -1230,19 +1420,163 @@ $.ajax({
          $(nTr).css("color", "");
      } else {
 			var aData =  courseNeededBuckets.fnGetData(nTr);
-			var req = aData[2];
+			var bucket = aData[1];
+			
+			var OvrlDashphpURL = 'OvrlDash.php';
+		$.ajax({
+         type: 'POST',
+         url: OvrlDashphpURL,
+         dataType: 'json',
+         data: {
+             action: 'findChildBuckets',
+				 bucket: bucket
+				 
+         },
+         success: function(data) {
+if (data.success) {
+              // alert ("children found");
+				   openChildBuckets(nTr, courseNeededBuckets);
+						
+					
+             } else {
+                //alert ("no child buckets");
+						var req = aData[2];
 			if (req == "YES"){
-        openBucket(nTr);
-		} else {openBucket2(nTr);}
+        openBucket(nTr, courseNeededBuckets);
+		} else {
+			openBucket2(nTr, courseNeededBuckets);
+		}
+             }           
+
+					
+         },
+         error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("course doesnt exist");             
+				alert(errorThrown);
+         }
+     });			
+		
      }
  }
 
-function openBucket(nTr){
-		var aData =  courseNeededBuckets.fnGetData(nTr);
+function openChildBuckets(nTr, oTable){
+		var aData =  oTable.fnGetData(nTr);
+	var bucket = aData[1];
+
+	var req = aData[2];
+
+  oTable.fnOpen(nTr, sto_formatDataTableNeededChildBuckets(oTable,
+         nTr), "ui-state-highlight");
+	var childTableDTNeeded2 = null;
+	
+var OvrlDashphpURL = 'OvrlDash.php';
+
+ $.ajax({
+         type: 'POST',
+         url: OvrlDashphpURL,
+         dataType: 'json',
+         data: {
+             action: 'getMajorBucketsChildBuckets',
+				 bucket: bucket
+         },
+         success: function(data) {
+						var bucketHTMLID = removeSpace(bucket);
+					//alert(bucketHTMLID);
+             childTableDTNeeded2 = $('#childBucketsDT'+bucketHTMLID ).dataTable({
+                 "aaData": data,
+                 "aoColumns": [{
+                     "sTitle": ""
+                 }, {
+                     "sTitle": "subbucket name"
+                 }, {
+                     "sTitle": "all required"
+                 }, ],
+                
+                 "bAutoWidth": false,
+                 "sPaginationType": "full_numbers",
+						 "retrieve": true
+		});		
+			  $('#childBucketsDT'+ bucketHTMLID +' tbody tr td').off();
+             $('#childBucketsDT' + bucketHTMLID +' tbody tr td').on('click', clickBucket2);
+			
+
+ function clickBucket2() {
+     var nTr = this.parentNode;
+		
+     var open = false;
+     try {
+         if ($(nTr).next().children().first().hasClass("ui-state-highlight"))
+             open = true;
+     } catch (err) {
+         alert(err);
+     }
+     if (open) {
+         /* This row is already open - close it */
+         childTableDTNeeded2.fnClose(nTr);
+         $(nTr).css("color", "");
+     } else {
+
+			var aData =    childTableDTNeeded2.fnGetData(nTr);
+			var bucket = aData[1];
+			
+			var OvrlDashphpURL = 'OvrlDash.php';
+		$.ajax({
+         type: 'POST',
+         url: OvrlDashphpURL,
+         dataType: 'json',
+         data: {
+             action: 'findChildBuckets',
+				 bucket: bucket
+				 
+         },
+         success: function(data) {
+if (data.success) {
+              // alert ("children found");
+					
+				   openChildBuckets(nTr, childTableDTNeeded2);
+						
+					
+             } else {
+               // alert ("no child buckets");
+						var req = aData[2];
+			if (req == "YES"){
+        openBucket(nTr, childTableDTNeeded2);
+		} else {
+			openBucket2(nTr, childTableDTNeeded2);
+		}
+             }           
+
+					
+         },
+         error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("course doesnt exist");             
+				alert(errorThrown);
+         }
+     });			
+		
+     }
+ }
+
+
+},
+ error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert(errorThrown);
+         }
+
+     });
+
+
+}
+
+
+
+
+function openBucket(nTr, oTable){
+		var aData =  oTable.fnGetData(nTr);
 	var bucket = aData[1];
 	var req = aData[2];
 
-   courseNeededBuckets.fnOpen(nTr, sto_formatDataTableNeeded(courseNeededBuckets,
+   oTable.fnOpen(nTr, sto_formatDataTableNeeded(oTable,
          nTr), "ui-state-highlight");
 	
 	var childTableDTNeeded;
@@ -1257,7 +1591,8 @@ var OvrlDashphpURL = 'OvrlDash.php';
 				 bucket: bucket
          },
          success: function(data) {
-             childTableDTNeeded = $('#coursesNeededDT' ).dataTable({
+					var bucketHTMLID = removeSpace(bucket);
+             childTableDTNeeded = $('#coursesNeededDT' +bucketHTMLID ).dataTable({
                  "aaData": data,
                  "aoColumns": [{
                      "sTitle": "Course ID"
@@ -1273,8 +1608,8 @@ var OvrlDashphpURL = 'OvrlDash.php';
                  "sPaginationType": "full_numbers",
 						 "retrieve": true
 		});		
-			  $('#coursesNeededDT tbody tr td').off();
-             $('#coursesNeededDT tbody tr td').on('click',
+			  $('#coursesNeededDT'+ bucketHTMLID +' tbody tr td').off();
+             $('#coursesNeededDT'+ bucketHTMLID +' tbody tr td').on('click',
 			 sto_rowClickHandlerNeeded);
 
 function sto_rowClickHandlerNeeded() {
@@ -1370,20 +1705,20 @@ var divId = "#itemDetails" + aData[0];
 
 }
 
-function openBucket2(nTr){
-		var aData =  courseNeededBuckets.fnGetData(nTr);
+function openBucket2(nTr, oTable){
+		var aData =  oTable.fnGetData(nTr);
 	var bucket = aData[1];
 	var req = aData[2];
 
 if (bucket != "CS Natural Sciences" && bucket != "UCC")
 {
-   courseNeededBuckets.fnOpen(nTr, sto_formatDataTableNeeded2(courseNeededBuckets,
+  oTable.fnOpen(nTr, sto_formatDataTableNeeded2(oTable,
          nTr), "ui-state-highlight");
 	}else {
-courseNeededBuckets.fnOpen(nTr, sto_formatDataTableNaturalScience(courseNeededBuckets,
+oTable.fnOpen(nTr, sto_formatDataTableNaturalScience(oTable,
          nTr), "ui-state-highlight");
 }
-	var childTableDTNeeded;
+	var childTableDTNeededCourses;
 var OvrlDashphpURL = 'OvrlDash.php';
 
 
@@ -1396,7 +1731,7 @@ if(sure)
  AddExtraCourse(course, bucket);
    
 }); 
-
+/*
 function RequirementMet() {
 $.ajax({
          type: 'POST',
@@ -1422,7 +1757,7 @@ $.ajax({
 						
 				} else {
 					//alert("requirement not met");
-				 $('.appendReq' + change).remove();
+				 $("td:contains('"+change+"')").children().remove();
 				//('<p>').attr('class','appendReq' + bucket).remove
 				append = false;
 					//alert("requirement not met");
@@ -1438,7 +1773,7 @@ $.ajax({
 RequirementMet();
  
 
-
+*/
 
 
 
@@ -1455,7 +1790,7 @@ $.ajax({
          },
          success: function(data) {
 if (data.success) {
-               alert ("courseadded");
+               alert ("course added");
 				   
 
              } else {
@@ -1472,7 +1807,7 @@ if (data.success) {
 }
 
 
-
+var childTableDTNeededCourses2;
 
  $.ajax({
          type: 'POST',
@@ -1483,7 +1818,9 @@ if (data.success) {
 				 bucket: bucket
          },
          success: function(data) {
-             childTableDTNeeded = $('#coursesNeededDT' ).dataTable({
+						//	alert(JSON.stringify(data)+ ": openbucket2data");	
+				var bucketHTMLID = removeSpace(bucket);
+             childTableDTNeededCourses2 = $('#coursesNeededDT' +bucketHTMLID ).dataTable({
                  "aaData": data,
                  "aoColumns": [{
                      "sTitle": "Course ID"
@@ -1500,12 +1837,13 @@ if (data.success) {
                  "bAutoWidth": false,
                  "sPaginationType": "full_numbers",
 						 "retrieve": true
-		});		
-			  $('#coursesNeededDT tbody tr td:nth-child(-n+4)').off();
-             $('#coursesNeededDT tbody tr td:nth-child(-n+4)').on('click',
+		});	
+			
+			  $('#coursesNeededDT'+ bucketHTMLID +' tbody tr td:nth-child(-n+4)').off();
+             $('#coursesNeededDT'+ bucketHTMLID +' tbody tr td:nth-child(-n+4)').on('click',
 			 sto_rowClickHandlerNeeded);
-				 $('#coursesNeededDT tbody tr td:nth-child(5)').off();
-					 $('#coursesNeededDT tbody tr td:nth-child(5)').on('click',
+				 $('#coursesNeededDT'+ bucketHTMLID +' tbody tr td:nth-child(5)').off();
+					 $('#coursesNeededDT'+ bucketHTMLID +' tbody tr td:nth-child(5)').on('click',
 			 CheckboxChange);
 
 
@@ -1515,7 +1853,7 @@ function CheckboxChange() {
 
 	
 	var nTr = this.parentNode;
-	var aData = childTableDTNeeded.fnGetData(nTr);
+	var aData = childTableDTNeededCourses2.fnGetData(nTr);
 	var courseID = aData[0];
 	var state;
 if ($('#'+courseID+'check').prop('checked'))
@@ -1569,7 +1907,7 @@ function sto_rowClickHandlerNeeded() {
      }
      if (open) {
          /* This row is already open - close it */
-         childTableDTNeeded.fnClose(nTr);
+         childTableDTNeededCourses2.fnClose(nTr);
          $(nTr).css("color", "");
      } else {
          sto_openDetailsRowNeeded(nTr);
@@ -1577,16 +1915,16 @@ function sto_rowClickHandlerNeeded() {
  }
 
 function sto_openDetailsRowNeeded(nTr) {
-     childTableDTNeeded.fnOpen(nTr, sto_formatStoreManagerDetails2(childTableDTNeeded, nTr),
+     childTableDTNeededCourses2.fnOpen(nTr, sto_formatStoreManagerDetails2(childTableDTNeededCourses2, nTr),
          "ui-state-highlight");
-     var aData = childTableDTNeeded.fnGetData(nTr);
+     var aData = childTableDTNeededCourses2.fnGetData(nTr);
      $("#modifyItem" + aData[0]).button();
      $("#moveItem" + aData[0]).button();
 var divId = "#itemDetails" + aData[0];
      $("#modifyItem" + aData[0]).click(function() {
          $("#pop2").dialog();
          $('#pop2').on('dialogclose', function(event) {
-             childTableDTNeeded.fnClose(nTr);
+             childTableDTNeededCourses2.fnClose(nTr);
              (divId).empty();
              $(nTr).css("color", "#c5dbec");
              $("#pop2").remove();
@@ -1595,15 +1933,15 @@ var divId = "#itemDetails" + aData[0];
      $("#modSubmit2").click(function() {
          nRelev = $("input[name=nRelev]").val();
          nWeight = $("input[name=nWeight]").val();
-         sto_modWeight(childTableDTNeeded, divId, nTr, nWeight, nRelev);
-         childTableDTNeeded.fnUpdate([aData[0], aData[1], nWeight, nRelev, aData[4]],
+         sto_modWeight(childTableDTNeededCourses2, divId, nTr, nWeight, nRelev);
+         childTableDTNeededCourses2.fnUpdate([aData[0], aData[1], nWeight, nRelev, aData[4]],
              nTr);
          $('#pop2').dialog('close');
      });
   
      $("#moveItem" + aData[0]).click(function() {
          $(nTr).css("color", "#c5dbec");
-         addArrow(childTableDTNeeded, nTr);
+         addArrow(childTableDTNeededCourses2, nTr);
      });
 }
 
@@ -1619,14 +1957,14 @@ var divId = "#itemDetails" + aData[0];
 
 
 
-     var aData =  courseNeededBuckets.fnGetData(nTr);
+     var aData =  oTable.fnGetData(nTr);
      $("#modifyItem" + aData[0]).button();
      $("#moveItem" + aData[0]).button();
      var divId = "#itemDetails" + aData[0];
      $("#modifyItem" + aData[0]).click(function() {
          $("#pop2").dialog();
          $('#pop2').on('dialogclose', function(event) {
-            courseNeededBuckets.fnClose(nTr);
+           oTable.fnClose(nTr);
              (divId).empty();
              $(nTr).css("color", "#c5dbec");
              $("#pop2").remove();
@@ -1635,18 +1973,18 @@ var divId = "#itemDetails" + aData[0];
      $("#modSubmit2").click(function() {
          nRelev = $("input[name=nRelev]").val();
          nWeight = $("input[name=nWeight]").val();
-         sto_modWeight( courseNeededBuckets, divId, nTr, nWeight, nRelev);
-          courseNeededBuckets.fnUpdate([aData[0], aData[1], nWeight, nRelev],
+         sto_modWeight( oTable, divId, nTr, nWeight, nRelev);
+         oTable.fnUpdate([aData[0], aData[1], nWeight, nRelev],
              nTr);
          $('#pop2').dialog('close');
      });
      $("#addArrow").click(function() {
          $(nTr).css("color", "#c5dbec");
-         addArrow(courseNeededBuckets, nTr);
+         addArrow(oTable, nTr);
      });
      $("#moveItem" + aData[0]).click(function() {
          $(nTr).css("color", "#c5dbec");
-         addArrow(courseNeededBuckets, nTr);
+         addArrow(oTable, nTr);
      });
 
 
@@ -1933,63 +2271,6 @@ var divId = "#itemDetails" + aData[0];
          }
      }
 
-
-function getTakenElectives(thiss) {
-
- $.ajax({
-         type: 'POST',
-         url: OvrlDashphpURL,
-         dataType: 'json',
-         data: {
-             action: 'courseTakenElectives'
-         },
-         success: function(data) {
-           
-
-        var row = parentTableTaken.row($(thiss).closest("tr"));
-        
-        if(row.child() == undefined){
-            $(thiss).html("-");
-            var $table2 = $("<table id = 'coursesTakenE'><thead><tr><th></th><th></th><th></th></tr></thead><tbody></tbody></table>");
-            $table2.attr("id", "coursesTakenE");
-             childTableTakenE = $table2.dataTable({
-                 "aaData": data,
-                 "aaSorting": [
-                     [0, "asc"]
-                 ],
-                 "aoColumns": [
-                     //{ "bVisible": true},
-                     {
-                         "sTitle": "Course ID"
-                     }, {
-                         "sTitle": "Credits"
-                     }, {
-                         "sTitle": "Grade"
-                     }
-                 ],
-                 
-                 "bAutoWidth": true,
-                 "sPaginationType": "full_numbers"
-             });
-            
-            row.child(childTableTakenE.api().table().container());
-            row.child.show();
-        } else {
-            $(thiss).html("+");
-            row.child(false);
-        }
-    
- 		$('#coursesTakenE tbody tr td').off();
-             $('#coursesTakenE tbody tr td ').on('click',
-                 sto_rowClickHandler5);
-
-},
-         error: function(XMLHttpRequest, textStatus, errorThrown) {
-             alert(errorThrown);
-         }
-     });
-
-}
 
             
      $.ajax({
