@@ -180,21 +180,22 @@ function importDataAdmin($adminData){
 			{
 				if($rows->field[7] == "null")
 				{
+					$majorID = $rows->field[0];
 					$stmt = $mysqli->prepare("INSERT INTO MajorBucket (majorID, dateStart, dateEnd, description, allRequired, quantityNeeded, quantification, parentID) VALUES (?, ?, ?, ?, ?, ?, ?, null)
                                           ON DUPLICATE KEY UPDATE dateStart=VALUES(dateStart), dateEnd=VALUES(dateEnd), allRequired=VALUES(allRequired), quantification=VALUES(quantification), parentID=VALUES(parentID)");
-				$stmt->bind_param('sssssss', $rows->field[0], $rows->field[1], $rows->field[2], $rows->field[3], $rows->field[4], $rows->field[5], $rows->field[6]);
-    			$stmt->execute();
+					$stmt->bind_param('sssssss', $rows->field[0], $rows->field[1], $rows->field[2], $rows->field[3], $rows->field[4], $rows->field[5], $rows->field[6]);
+					$stmt->execute();
 				}
 				else
 				{
-				
 					$stmt = $mysqli->prepare("SELECT bucketID FROM MajorBucket WHERE majorID = ? and description = ?");
 					$stmt->bind_param('ss', $rows->field[0], $rows->field[7]);
 					$stmt->execute();
 					$stmt->bind_result($parentID);
 					$stmt->fetch();
-					
-					$stmt = $mysqli->prepare("INSERT INTO MajorBucket (majorID, dateStart, dateEnd, description, allRequired, quantityNeeded, quantification, parentID) VALUES (?, ?, ?, ?, ?, ?, ?, ". strval($parentID) .")
+					              
+					$mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
+					$stmt = $mysqli->prepare("INSERT INTO MajorBucket (majorID, dateStart, dateEnd, description, allRequired, quantityNeeded, quantification, parentID) VALUES (?, ?, ?, ?, ?, ?, ?, ?)
                                           ON DUPLICATE KEY UPDATE dateStart=VALUES(dateStart), dateEnd=VALUES(dateEnd), allRequired=VALUES(allRequired), quantification=VALUES(quantification), parentID=VALUES(parentID)");
 					if($stmt == false)
 					{
@@ -202,7 +203,7 @@ function importDataAdmin($adminData){
 					}
 					else
 					{
-						$stmt->bind_param('sssssss', $rows->field[0], $rows->field[1], $rows->field[2], $rows->field[3], $rows->field[4], $rows->field[5], $rows->field[6]);
+						$stmt->bind_param('sssssssi', $rows->field[0], $rows->field[1], $rows->field[2], $rows->field[3], $rows->field[4], $rows->field[5], $rows->field[6], $parentID);
 						$stmt->execute();
 					}
 				}
@@ -211,6 +212,12 @@ function importDataAdmin($adminData){
 				$stmt = $mysqli->prepare("INSERT INTO CourseInfo (courseID, courseName, credits) VALUES (?, ?, ?)
                                           ON DUPLICATE KEY UPDATE courseName=VALUES(courseName), credits=VALUES(credits)");
                 $stmt->bind_param('sss', $rows->field[0], $rows->field[1], $rows->field[2]);
+                $stmt->execute();
+			}
+			else if($table_data['name'] == 'MajorBucketRequiredCourses'){
+				$stmt = $mysqli->prepare("INSERT INTO MajorBucketRequiredCourses (courseInfoID, bucketID, minimumGrade) VALUES ((SELECT courseInfoID FROM CourseInfo WHERE courseID = ?), (SELECT bucketID FROM MajorBucket WHERE majorID = ? and description = ?), ?)
+                                          ON DUPLICATE KEY UPDATE courseInfoID=VALUES(courseInfoID), bucketID=VALUES(bucketID), minimumGrade=VALUES(minimumGrade)");
+                $stmt->bind_param('ssss', $rows->field[0], $majorID, $rows->field[1], $rows->field[2]);
                 $stmt->execute();
 			}
 		}
