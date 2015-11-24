@@ -179,18 +179,23 @@ if ($action == "getMajorBuckets") {
         array_push($userID, $output1);
         
     }
-    $stmt = $mysqli->prepare("SELECT description FROM MajorBucket WHERE majorID = majorID in (SELECT majorID FROM StudentMajor WHERE userID = '" . $userID[0] . "')  and parentID IS NULL");
+    $stmt = $mysqli->prepare("SELECT description, allRequired FROM MajorBucket WHERE majorID = majorID in (SELECT majorID FROM StudentMajor WHERE userID = '" . $userID[0] . "')  and parentID IS NULL");
     
     $stmt->execute();
-    $stmt->bind_result($desc);
+    $stmt->bind_result($desc, $allReq);
     $output = array();
-    $i      = 0;
+   
     while ($stmt->fetch()) {
+        if ($allReq == 1) {
+            $allR = "YES";
+        } else
+            $allR = "NO";
         array_push($output, array(
             '+',
-            $desc
+            $desc,
+            $allR
+            
         ));
-        $i++;
     }
     echo json_encode($output);
     
