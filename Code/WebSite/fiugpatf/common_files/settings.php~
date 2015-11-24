@@ -121,35 +121,124 @@ if($action == "importWhatif") {
 			$loc = $_FILES['file']['tmp_name'];
 			shell_exec('qpdf --password="" --decrypt ' . $loc . ' ' . $username . '/unencrypted.pdf');
 			$courseInfo = shell_exec('python PDFWhatIfParser.py ' . $username . '/unencrypted.pdf');
-			$courses = explode("\n", $courseInfo);
-			foreach ($courses as $course) {
-				$courseDetails = explode("$$&&", $course);
-				$semester = $courseDetails[0];
-				$year = $courseDetails[1];
-				$courseID = $courseDetails[2];
-				$courseName = $courseDetails[3];
-				$grade = $courseDetails[4];
-				$credits = $courseDetails[5];
-				
-				$mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
-				$stmt = $mysqli->prepare("INSERT INTO CourseInfo (courseID, courseName, credits) VALUES (?, ?, ?)");
-				if(stmt !== false){
-					$stmt->bind_param('sss', $courseID, $courseName, $credits);
-    				$stmt->execute();
-				}
-				else {
-					echo "Error on course CourseInfo Import\n";
-				}
-    			
-    			$stmt = $mysqli->prepare("INSERT INTO StudentCourse (grade, weight, relevance, semester, year, courseInfoID, selected, userID) VALUES (?, 0, 0, ?, ?, (SELECT CourseInfoID FROM CourseInfo WHERE courseID = ?), 0, ?)");
-    			if(stmt !== false)
-    			{
-    				$stmt->bind_param('sssss', $grade, $semester, $year, $courseID, $user);
-    				$stmt->execute();
+			$allData = explode("!!!!", $courseInfo);
+			$majorData = explode("\n", $allData[0]);
+			$courses = explode("\n", $allData[1]);
+			$ipCourses = explode("\n", $allData[2]);
+			$neededCourses = explode("\n", $allData[3]);
+			$majorName;
+			foreach ($majorData as $maj) {
+				if($maj != "")
+				{
+					$mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
+					$stmt = $mysqli->prepare("INSERT INTO StudentMajor (userID, majorID) VALUES (?, (SELECT majorID from Major WHERE majorName = ?))");
+					$stmt->bind_param('ss', $user, $maj);
+					$stmt->execute();
+					
+					$majorName = $maj;
     			}
-    			else {
-    				echo "Error on StudentCourse Import\n";
-    			}	
+			}
+			
+			foreach ($courses as $course) {
+				if($course != ""){
+					$courseDetails = explode("$$&&", $course);
+					$bucket = $courseDetails[0];
+					$semester = $courseDetails[1];
+					$year = $courseDetails[2];
+					$courseID = $courseDetails[3];
+					$courseName = $courseDetails[4];
+					$grade = $courseDetails[5];
+					$credits = $courseDetails[6];
+				
+					$mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
+					$stmt = $mysqli->prepare("INSERT INTO CourseInfo (courseID, courseName, credits) VALUES (?, ?, ?)");
+					if($stmt !== false){
+						$stmt->bind_param('sss', $courseID, $courseName, $credits);
+						$stmt->execute();
+					}
+					else {
+						echo "Error on course CourseInfo Import\n";
+					}
+					
+					if($bucket != "None"){
+						$stmt = $mysqli->prepare("INSERT INTO MajorBucketRequiredCourses (bucketID, courseInfoID, minimumGrade) VALUES ((SELECT bucketID FROM MajorBucket WHERE description = ? AND majorID in (SELECT majorID FROM Major WHERE majorName = ?)), (SELECT courseInfoID FROM CourseInfo WHERE courseID = ? ), 'C')");
+						if($stmt !== false){
+							$stmt->bind_param('sss', $bucket, $majorName, $courseID);
+							$stmt->execute();
+						}
+						else {
+							echo "Error on course MajorRequiredBucketCourses Import\n";
+						}
+					}
+					
+					$stmt = $mysqli->prepare("INSERT INTO StudentCourse (grade, weight, relevance, semester, year, courseInfoID, selected, userID) VALUES (?, 0, 0, ?, ?, (SELECT CourseInfoID FROM CourseInfo WHERE courseID = ?), 0, ?)");
+					if($stmt !== false)
+					{
+						$stmt->bind_param('sssss', $grade, $semester, $year, $courseID, $user);
+						$stmt->execute();
+					}
+					else {
+						echo "Error on StudentCourse Import\n";
+					}	
+    			}
+			}
+			
+			foreach ($ipCourses as $ipCourse) {
+				if($ipCourse != ""){
+					$courseDetails = explode("$$&&", $ipCourse);
+					$bucket = $courseDetails[0];
+					$semester = $courseDetails[1];
+					$year = $courseDetails[2];
+					$courseID = $courseDetails[3];
+					$courseName = $courseDetails[4];
+					$grade = $courseDetails[5];
+					$credits = $courseDetails[6];
+				
+					$mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
+					$stmt = $mysqli->prepare("INSERT INTO CourseInfo (courseID, courseName, credits) VALUES (?, ?, ?)");
+					if($stmt !== false){
+						$stmt->bind_param('sss', $courseID, $courseName, $credits);
+						$stmt->execute();
+					}
+					else {
+						echo "Error on course CourseInfo Import\n";
+					}
+					
+					if($bucket != "None"){
+						$stmt = $mysqli->prepare("INSERT INTO MajorBucketRequiredCourses (bucketID, courseInfoID, minimumGrade) VALUES ((SELECT bucketID FROM MajorBucket WHERE description = ? AND majorID in (SELECT majorID FROM Major WHERE majorName = ?)), (SELECT courseInfoID FROM CourseInfo WHERE courseID = ? ), 'C')");
+						if($stmt !== false){
+							$stmt->bind_param('sss', $bucket, $majorName, $courseID);
+							$stmt->execute();
+						}
+						else {
+							echo "Error on course MajorRequiredBucketCourses Import\n";
+						}
+					}
+					
+					$stmt = $mysqli->prepare("INSERT INTO StudentCourse (grade, weight, relevance, semester, year, courseInfoID, selected, userID) VALUES ('IP', 0, 0, ?, ?, (SELECT CourseInfoID FROM CourseInfo WHERE courseID = ?), 0, ?)");
+					if($stmt !== false)
+					{
+						$stmt->bind_param('ssss', $semester, $year, $courseID, $user);
+						$stmt->execute();
+					}
+					else {
+						echo "Error on StudentCourse Import\n";
+					}	
+    			}
+			}
+			
+			foreach ($neededCourses as $neededCourse) {
+				if($ipCourse != ""){
+					$stmt = $mysqli->prepare("INSERT INTO StudentCourse (grade, weight, relevance, semester, year, courseInfoID, selected, userID) VALUES ('ND', 0, 0, '', '', (SELECT CourseInfoID FROM CourseInfo WHERE courseID = ?), 0, ?)");
+					if($stmt !== false)
+					{
+						$stmt->bind_param('ss', $neededCourse, $user);
+						$stmt->execute();
+					}
+					else {
+						echo "Error on StudentCourse Import\n";
+					}	
+    			}
 			}
 			shell_exec('rm -rf ' . $username);
 			//echo "true";

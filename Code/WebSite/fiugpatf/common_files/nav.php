@@ -14,8 +14,8 @@ if(isset($_SESSION['username']))
 }
 else
 {
-    echo "<li><a href=\"common_files/register.html\">Register</a></li>";
-    echo "<li><a href=\"login.html\">Log in</a></li>";
+    echo "<li><a href=\"register.html\">Register</a></li>";
+    echo "<li><a href=\"../login.html\">Log in</a></li>";
     echo "<li><a href=#>About</a></li>";
 }
 ?>
