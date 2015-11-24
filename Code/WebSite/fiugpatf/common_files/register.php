@@ -27,8 +27,8 @@ $stmt->bind_param('sssss', $_POST["email"], $_POST["username"], $_POST["password
 			<div class="nav">
 				<ul>
 					<li><a href="register.html">Register</a></li>
-					<li><a href="login.html">Log in</a></li>
-					<li><a href=#>About</a></li>
+					<li><a href="../login.html">Log in</a></li>
+					<li><a href="../overallgpadashboard/about.html">About</a></li>
 				</ul>
 			</div>
 		</div>

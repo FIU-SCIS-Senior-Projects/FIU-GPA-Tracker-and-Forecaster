@@ -22,12 +22,12 @@ $stmt->bind_param('sssss', $_POST["email"], $_POST["username"], $_POST["password
 		<div class="headerLinks" class="container clearfix">
 			<div class="logo">
 				<img class="logo" src="http://www.fiu.edu/_assets/images/core/fiu-logo-large.png" />
-				<a href="index.html">GPA Tracker and Forecaster</a>
+				<a href="../index.html">GPA Tracker and Forecaster</a>
 			</div>
 			<div class="nav">
 				<ul>
 					<li><a href="register.html">Register</a></li>
-					<li><a href="login.html">Log in</a></li>
+					<li><a href="../login.html">Log in</a></li>
 					<li><a href=#>About</a></li>
 				</ul>
 			</div>
