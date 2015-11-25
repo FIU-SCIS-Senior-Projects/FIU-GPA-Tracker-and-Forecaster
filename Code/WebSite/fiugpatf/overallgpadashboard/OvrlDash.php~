@@ -327,7 +327,7 @@ if (isset($_POST['bucket'])) {
     $user   = $_SESSION['username'];
     $userID = $_SESSION['userID'];
        
-if($query = $mysqli->prepare("SELECT description, allRequired, parentID FROM MajorBucket WHERE majorID = majorID in (SELECT majorID FROM StudentMajor WHERE userID = '1') and parentID in (select bucketID FROM MajorBucket where description = '".$bucket."')")){
+if($query = $mysqli->prepare("SELECT description, allRequired, parentID FROM MajorBucket WHERE majorID = majorID in (SELECT majorID FROM StudentMajor WHERE userID = '".$userID."') and parentID in (select bucketID FROM MajorBucket where description = '".$bucket."')")){
             $query->execute();
             $query->store_result();
             $query->bind_result($output10);
