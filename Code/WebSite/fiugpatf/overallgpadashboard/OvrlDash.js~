@@ -6,6 +6,8 @@
      $("#coursesTaken tbody td:nth-child(3) ").toggle();
      $(".GPACalcBox p:nth-child(2)").toggle();
  }
+
+
   var childTableDTNeededCourses;
  var childTableDTNeeded;
  var childTableDT;
@@ -56,7 +58,7 @@ function sto_formatDataTable(oTable, nTr) {
      var aData = oTable.fnGetData(nTr);
      var id = removeSpace(aData[1]);
      var sOut = '';
-	   sOut += '<table id ="coursesTakenDT">';//'<div id="itemDetails' + id + '">';
+	   sOut += '<table id ="coursesTakenDT'+id+'">';//'<div id="itemDetails' + id + '">';
      sOut += '<thead><tr><th></th><th></th><th></th></tr></thead>'; //'	<div class="buttonColumnDetails">';
      sOut += '<tbody></tbody></table>';//'		<button id="modifyItem' + id + '">Modify</button>';
    
@@ -289,7 +291,134 @@ function sto_rowClickHandler5() {
          addArrow(childTable1, nTr);
      });
  }
+ function fnGPACalc(grades, credits) {
+             var gradepoints = 0;
+             var credithours = 0;
+				//	alert("grades.length: " + grades.length + " grsds[i]: " + grades[0]);
+             for (var i = 0; i < grades.length; i++) {
+                 if (grades[i] == "A") {
+                     gradepoints = gradepoints + (4 * credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "A-") {
+                     gradepoints = gradepoints + (3.70 *
+                         credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "B+") {
+                     gradepoints = gradepoints + (3.33 *
+                         credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "B") {
+                     gradepoints = gradepoints + (3.3 * credits[
+                         i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "B-") {
+                     gradepoints = gradepoints + (2.70 *
+                         credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "C+") {
+                     gradepoints = gradepoints + (2.30 *
+                         credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "C") {
+                     gradepoints = gradepoints + (2 * credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "C-") {
+                     gradepoints = gradepoints + (1.70 *
+                         credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "D+") {
+                     gradepoints = gradepoints + (1.30 *
+                         credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "D") {
+                     gradepoints = gradepoints + (1.0 * credits[
+                         i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "D-") {
+                     gradepoints = gradepoints + (0.70 *
+                         credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "F") {
+                     gradepoints = gradepoints + (0 * credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "IP") {
+                     gradepoints = gradepoints + (0 * credits[i]);
+                     credithours = credithours + (0 * credits[i]);
+                 } else {
+                     gradepoints = gradepoints + (0 * credits[i]);
+                     credithours = credithours + (0 * credits[i]);
+                 }
+             }
+				//	alert (gradepoints + " : gpts " +"cHrs: " +credithours);
+             var gpa = gradepoints / credithours;
+             gpa = Math.round(gpa * 100) / 100;
+             var text = $('#data p:first').text();
+             var reqGrd = parseInt(text);
+           // alert(gpa +" gpa after calc");
+             $("#GPACalc").replaceWith('<p id = "GPACalc">' +
+                 gpa + '</p>');
+       /*      if (gpa >= reqGrd) {
+                 $("#GPACalc").css('color', '#E6C12B');
+							var glow = $('#GPACalc');
+				setInterval(function(){
+    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
+}, 2000);
+             } else {
+                 $("#GPACalc").css('color', 'black');
+				    var glow = $('#GPACalc');
+				setInterval(function(){
+    glow.hasClass('glowoff') ? glow.removeClass('glowoff') : glow.addClass('glowoff');
+}, 2000);
+             }
 
+*/
+         }
+function GetGPA(){
+var OvrlDashphpURL = 'OvrlDash.php';
+
+$.ajax({
+         type: 'POST',
+         url: OvrlDashphpURL,
+         dataType: 'json',
+         data: {
+             action: 'getGPA'
+         },
+         success: function(data) {
+            var allGrades = [];
+var allCredits =[];
+
+					for(var i = 0; i < data.length; i++){
+               allCredits.push(data[i][1]);
+					allGrades.push(data[i][0]);
+}
+				fnGPACalc(allGrades, allCredits);
+                 
+             
+         },
+         error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert(errorThrown);
+         }
+
+     });
+		       
+
+
+/*
+         var oSettings = $('#coursesTakenE').dataTable().fnSettings();
+         var rowCount = oSettings.fnRecordsTotal();
+         var gradesForGPA2 = [];
+         var creditsForGPA2 = [];
+         for (var i = 0; i < rowCount; i++) {
+             var id = $('#coursesTakenE').dataTable().fnGetData(i, 2);
+             gradesForGPA2.push(id);
+             var id2 = $('#coursesTakenE').dataTable().fnGetData(i,
+                 1);
+             creditsForGPA2.push(id2);
+         }
+         fnGPACalc(gradesForGPA2, creditsForGPA2);
+
+*/
+}
 
 function removeSpace(string)
 {
@@ -359,97 +488,7 @@ childTableTakenE.fnOpen(nTr, sto_formatStoreManagerDetails(childTableTakenE, nTr
          childTableTakenE.fnUpdate([aData[0], aData[1], nGrade], nTr);
          $('#pop').dialog('close');
          childTableTakenE.fnClose(nTr);
-
-         function fnGPACalc(grades, credits) {
-             var gradepoints = 0;
-             var credithours = 0;
-             for (var i = 0; i < grades.length; i++) {
-                 if (grades[i] == "A") {
-                     gradepoints = gradepoints + (4 * credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "A-") {
-                     gradepoints = gradepoints + (3.70 *
-                         credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "B+") {
-                     gradepoints = gradepoints + (3.33 *
-                         credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "B") {
-                     gradepoints = gradepoints + (3.3 * credits[
-                         i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "B-") {
-                     gradepoints = gradepoints + (2.70 *
-                         credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "C+") {
-                     gradepoints = gradepoints + (2.30 *
-                         credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "C") {
-                     gradepoints = gradepoints + (2 * credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "C-") {
-                     gradepoints = gradepoints + (1.70 *
-                         credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "D+") {
-                     gradepoints = gradepoints + (1.30 *
-                         credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "D") {
-                     gradepoints = gradepoints + (1.0 * credits[
-                         i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "D-") {
-                     gradepoints = gradepoints + (0.70 *
-                         credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "F") {
-                     gradepoints = gradepoints + (0 * credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "IP") {
-                     gradepoints = gradepoints + (0 * credits[i]);
-                     credithours = credithours + (0 * credits[i]);
-                 } else {
-                     gradepoints = gradepoints + (0 * credits[i]);
-                     credithours = credithours + (0 * credits[i]);
-                 }
-             }
-             var gpa = gradepoints / credithours
-             gpa = Math.round(gpa * 100) / 100;
-             var text = $('#data p:first').text();
-             var reqGrd = parseInt(text);
-            
-             $("#GPACalc").replaceWith('<p id = "GPACalc">' +
-                 gpa + '</p>');
-             if (gpa >= reqGrd) {
-                 $("#GPACalc").css('color', '#E6C12B');
-							var glow = $('#GPACalc');
-				setInterval(function(){
-    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
-}, 2000);
-             } else {
-                 $("#GPACalc").css('color', 'black');
-				    var glow = $('#GPACalc');
-				setInterval(function(){
-    glow.hasClass('glowoff') ? glow.removeClass('glowoff') : glow.addClass('glowoff');
-}, 2000);
-             }
-         }
-         var oSettings = $('#coursesTakenE').dataTable().fnSettings();
-         var rowCount = oSettings.fnRecordsTotal();
-         var gradesForGPA2 = [];
-         var creditsForGPA2 = [];
-         for (var i = 0; i < rowCount; i++) {
-             var id = $('#coursesTakenE').dataTable().fnGetData(i, 2);
-             gradesForGPA2.push(id);
-             var id2 = $('#coursesTakenE').dataTable().fnGetData(i,
-                 1);
-             creditsForGPA2.push(id2);
-         }
-         fnGPACalc(gradesForGPA2, creditsForGPA2);
+			GetGPA();
      });
      $("#deleteItem" + aData[0]).click(function() {
          var del = confirm("Delete course?");
@@ -458,117 +497,9 @@ childTableTakenE.fnOpen(nTr, sto_formatStoreManagerDetails(childTableTakenE, nTr
              childTableTakenE.fnClose(nTr);
              childTableTakenE.fnDeleteRow(nTr);
              alert("Course Info for " + aData[0] + " deleted!");
+				GetGPA();
+           //fnnn
 
-             function fnGPACalc(grades, credits) {
-                 var gradepoints = 0;
-                 var credithours = 0;
-                 for (var i = 0; i < grades.length; i++) {
-                     if (grades[i] == "A") {
-                         gradepoints = gradepoints + (4 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "A-") {
-                         gradepoints = gradepoints + (3.70 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "B+") {
-                         gradepoints = gradepoints + (3.33 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "B") {
-                         gradepoints = gradepoints + (3.3 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "B-") {
-                         gradepoints = gradepoints + (2.70 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "C+") {
-                         gradepoints = gradepoints + (2.30 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "C") {
-                         gradepoints = gradepoints + (2 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "C-") {
-                         gradepoints = gradepoints + (1.70 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "D+") {
-                         gradepoints = gradepoints + (1.30 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "D") {
-                         gradepoints = gradepoints + (1.0 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "D-") {
-                         gradepoints = gradepoints + (0.70 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "F") {
-                         gradepoints = gradepoints + (0 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "IP") {
-                         gradepoints = gradepoints + (0 *
-                             credits[i]);
-                         credithours = credithours + (0 *
-                             credits[i]);
-                     } else {
-                         gradepoints = gradepoints + (0 *
-                             credits[i]);
-                         credithours = credithours + (0 *
-                             credits[i]);
-                     }
-                 }
-                 var gpa = gradepoints / credithours
-                 gpa = Math.round(gpa * 100) / 100;
-                 var text = $('#data p:first').text();
-                 var reqGrd = parseInt(text);
-                 if (gpa > reqGrd) {
-                     $("#GPACalc").css('color', ' #E6C12B');
-						var glow = $('#GPACalc');
-				setInterval(function(){
-    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
-}, 2000);
-                 } else {
-                     $("#GPACalc").css('color', ' black');
-								    var glow = $('#GPACalc');
-				setInterval(function(){
-    glow.hasClass('glowoff') ? glow.removeClass('glowoff') : glow.addClass('glowoff');
-}, 2000);
-                 }
-                 $("#GPACalc").replaceWith('<p id = "GPACalc">' +
-                     gpa + '</p>');
-                
-             }
-             var oSettings = $('#coursesTaken').dataTable().fnSettings();
-             var rowCount = oSettings.fnRecordsTotal();
-             var gradesForGPA2 = [];
-             var creditsForGPA2 = [];
-             for (var i = 0; i < rowCount; i++) {
-                 var id = $('#coursesTaken').dataTable().fnGetData(
-                     i, 2);
-                 gradesForGPA2.push(id);
-                 var id2 = $('#coursesTaken').dataTable().fnGetData(
-                     i, 1);
-                 creditsForGPA2.push(id2);
-             }
-             fnGPACalc(gradesForGPA2, creditsForGPA2);
          } else {
              courseTaken.fnClose(nTr);
          }
@@ -666,97 +597,10 @@ childTableTakenE.fnOpen(nTr, sto_formatStoreManagerDetails(childTableTakenE, nTr
         childTableDT.fnUpdate([aData[0], aData[1], nGrade], nTr);
          $('#pop').dialog('close');
          childTableDT.fnClose(nTr);
-
-         function fnGPACalc(grades, credits) {
-             var gradepoints = 0;
-             var credithours = 0;
-             for (var i = 0; i < grades.length; i++) {
-                 if (grades[i] == "A") {
-                     gradepoints = gradepoints + (4 * credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "A-") {
-                     gradepoints = gradepoints + (3.70 *
-                         credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "B+") {
-                     gradepoints = gradepoints + (3.33 *
-                         credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "B") {
-                     gradepoints = gradepoints + (3.3 * credits[
-                         i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "B-") {
-                     gradepoints = gradepoints + (2.70 *
-                         credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "C+") {
-                     gradepoints = gradepoints + (2.30 *
-                         credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "C") {
-                     gradepoints = gradepoints + (2 * credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "C-") {
-                     gradepoints = gradepoints + (1.70 *
-                         credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "D+") {
-                     gradepoints = gradepoints + (1.30 *
-                         credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "D") {
-                     gradepoints = gradepoints + (1.0 * credits[
-                         i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "D-") {
-                     gradepoints = gradepoints + (0.70 *
-                         credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "F") {
-                     gradepoints = gradepoints + (0 * credits[i]);
-                     credithours = credithours + (1 * credits[i]);
-                 } else if (grades[i] == "IP") {
-                     gradepoints = gradepoints + (0 * credits[i]);
-                     credithours = credithours + (0 * credits[i]);
-                 } else {
-                     gradepoints = gradepoints + (0 * credits[i]);
-                     credithours = credithours + (0 * credits[i]);
-                 }
-             }
-             var gpa = gradepoints / credithours
-             gpa = Math.round(gpa * 100) / 100;
-             var text = $('#data p:first').text();
-             var reqGrd = parseInt(text);
-            
-             $("#GPACalc").replaceWith('<p id = "GPACalc">' +
-                 gpa + '</p>');
-             if (gpa >= reqGrd) {
-                 $("#GPACalc").css('color', '#E6C12B');
-							var glow = $('#GPACalc');
-				setInterval(function(){
-    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
-}, 2000);
-             } else {
-                 $("#GPACalc").css('color', 'black');
-				    var glow = $('#GPACalc');
-				setInterval(function(){
-    glow.hasClass('glowoff') ? glow.removeClass('glowoff') : glow.addClass('glowoff');
-}, 2000);
-             }
-         }
-         var oSettings = $('#coursesTaken').dataTable().fnSettings();
-         var rowCount = oSettings.fnRecordsTotal();
-         var gradesForGPA2 = [];
-         var creditsForGPA2 = [];
-         for (var i = 0; i < rowCount; i++) {
-             var id = $('#coursesTaken').dataTable().fnGetData(i, 2);
-             gradesForGPA2.push(id);
-             var id2 = $('#coursesTaken').dataTable().fnGetData(i,
-                 1);
-             creditsForGPA2.push(id2);
-         }
-         fnGPACalc(gradesForGPA2, creditsForGPA2);
+			GetGPA();
+//fnnn
+        
+         
      });
      $("#deleteItem" + aData[0]).click(function() {
          var del = confirm("Delete course?");
@@ -766,116 +610,8 @@ childTableTakenE.fnOpen(nTr, sto_formatStoreManagerDetails(childTableTakenE, nTr
              courseTaken.fnDeleteRow(nTr);
              alert("Course Info for " + aData[0] + " deleted!");
 
-             function fnGPACalc(grades, credits) {
-                 var gradepoints = 0;
-                 var credithours = 0;
-                 for (var i = 0; i < grades.length; i++) {
-                     if (grades[i] == "A") {
-                         gradepoints = gradepoints + (4 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "A-") {
-                         gradepoints = gradepoints + (3.70 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "B+") {
-                         gradepoints = gradepoints + (3.33 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "B") {
-                         gradepoints = gradepoints + (3.3 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "B-") {
-                         gradepoints = gradepoints + (2.70 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "C+") {
-                         gradepoints = gradepoints + (2.30 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "C") {
-                         gradepoints = gradepoints + (2 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "C-") {
-                         gradepoints = gradepoints + (1.70 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "D+") {
-                         gradepoints = gradepoints + (1.30 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "D") {
-                         gradepoints = gradepoints + (1.0 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "D-") {
-                         gradepoints = gradepoints + (0.70 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "F") {
-                         gradepoints = gradepoints + (0 *
-                             credits[i]);
-                         credithours = credithours + (1 *
-                             credits[i]);
-                     } else if (grades[i] == "IP") {
-                         gradepoints = gradepoints + (0 *
-                             credits[i]);
-                         credithours = credithours + (0 *
-                             credits[i]);
-                     } else {
-                         gradepoints = gradepoints + (0 *
-                             credits[i]);
-                         credithours = credithours + (0 *
-                             credits[i]);
-                     }
-                 }
-                 var gpa = gradepoints / credithours
-                 gpa = Math.round(gpa * 100) / 100;
-                 var text = $('#data p:first').text();
-                 var reqGrd = parseInt(text);
-                 if (gpa > reqGrd) {
-                     $("#GPACalc").css('color', ' #E6C12B');
-						var glow = $('#GPACalc');
-				setInterval(function(){
-    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
-}, 2000);
-                 } else {
-                     $("#GPACalc").css('color', ' black');
-								    var glow = $('#GPACalc');
-				setInterval(function(){
-    glow.hasClass('glowoff') ? glow.removeClass('glowoff') : glow.addClass('glowoff');
-}, 2000);
-                 }
-                 $("#GPACalc").replaceWith('<p id = "GPACalc">' +
-                     gpa + '</p>');
-                
-             }
-             var oSettings = $('#coursesTaken').dataTable().fnSettings();
-             var rowCount = oSettings.fnRecordsTotal();
-             var gradesForGPA2 = [];
-             var creditsForGPA2 = [];
-             for (var i = 0; i < rowCount; i++) {
-                 var id = $('#coursesTaken').dataTable().fnGetData(
-                     i, 2);
-                 gradesForGPA2.push(id);
-                 var id2 = $('#coursesTaken').dataTable().fnGetData(
-                     i, 1);
-                 creditsForGPA2.push(id2);
-             }
-             fnGPACalc(gradesForGPA2, creditsForGPA2);
+             //fnnn
+            
          } else {
              courseTaken.fnClose(nTr);
          }
@@ -1025,6 +761,8 @@ childTableTakenE.fnOpen(nTr, sto_formatStoreManagerDetails(childTableTakenE, nTr
 
  function start() {
 
+GetGPA();
+
 var OvrlDashphpURL = 'OvrlDash.php';
   $.ajax({
          type: 'POST',
@@ -1155,8 +893,8 @@ var OvrlDashphpURL = 'OvrlDash.php';
                  "sPaginationType": "full_numbers",
 						 "retrieve": true
 		});		
-			  $('#childBucketsDT'+ bucketHTMLID +' tbody tr td').off();
-             $('#childBucketsDT' + bucketHTMLID +' tbody tr td').on('click', clickBucket2);
+			  $('#childBucketsDTTaken'+ bucketHTMLID +' tbody tr td').off();
+             $('#childBucketsDTTaken' + bucketHTMLID +' tbody tr td').on('click', clickBucket2);
 			
 
  function clickBucket2() {
@@ -1232,6 +970,7 @@ function openBucket(nTr, oTable){
          nTr), "ui-state-highlight");
 	var aData = oTable.fnGetData(nTr);
 	var bucket = aData[1];
+	
 	var childTableDT;
 var OvrlDashphpURL = 'OvrlDash.php';
  $.ajax({
@@ -1242,8 +981,10 @@ var OvrlDashphpURL = 'OvrlDash.php';
              action: 'getMajorBucketsCourse',
 				 bucket: bucket
          },
+
          success: function(data) {
-             childTableDT = $('#coursesTakenDT' ).dataTable({
+				var bucketHTMLID = removeSpace(bucket);
+             childTableDT = $('#coursesTakenDT' + bucketHTMLID ).dataTable({
                  "aaData": data,
                  "aoColumns": [{
                      "sTitle": "Course ID"
@@ -1257,8 +998,8 @@ var OvrlDashphpURL = 'OvrlDash.php';
                  "sPaginationType": "full_numbers",
 						 "retrieve": true
 		});		
-			  $('#coursesTakenDT tbody tr td').off();
-             $('#coursesTakenDT tbody tr td').on('click',
+			  $('#coursesTakenDT'+bucketHTMLID+' tbody tr td').off();
+             $('#coursesTakenDT'+bucketHTMLID+' tbody tr td').on('click',
 			 sto_rowClickHandlerTaken);
 
 function sto_rowClickHandlerTaken() {
@@ -1286,6 +1027,7 @@ function sto_openDetailsRowTaken(nTr) {
      $("#modifyItem" + aData[0]).button();
      $("#deleteItem" + aData[0]).button();
      var divId = "#itemDetails" + aData[0];
+
   $("#modifyItem" + aData[0]).click(function() {
          $("#pop").dialog();
          $('#pop').on('dialogclose', function(event) {
@@ -1302,6 +1044,7 @@ function sto_openDetailsRowTaken(nTr) {
         childTableDT.fnUpdate([aData[0], aData[1], nGrade], nTr);
          $('#pop').dialog('close');
          childTableDT.fnClose(nTr);
+			GetGPA();
 });
  $("#deleteItem" + aData[0]).click(function() {
          var del = confirm("Delete course?");
@@ -1310,6 +1053,7 @@ function sto_openDetailsRowTaken(nTr) {
              childTableDT.fnClose(nTr);
               childTableDT.fnDeleteRow(nTr);
              alert("Course Info for " + aData[0] + " deleted!");
+				GetGPA();
 
 }else {
              childTableDT.fnClose(nTr);
@@ -1349,6 +1093,7 @@ function sto_openDetailsRowTaken(nTr) {
           oTable.fnUpdate([aData[0], aData[1], nWeight, nRelev],
              nTr);
          $('#pop2').dialog('close');
+			
      });
     
      $("#moveItem" + aData[0]).click(function() {
@@ -1731,7 +1476,7 @@ if(sure)
  AddExtraCourse(course, bucket);
    
 }); 
-/*
+
 function RequirementMet() {
 $.ajax({
          type: 'POST',
@@ -1773,7 +1518,7 @@ $.ajax({
 RequirementMet();
  
 
-*/
+
 
 
 
@@ -2055,66 +1800,8 @@ var divId = "#itemDetails" + aData[0];
          },
          success: function(data) {
          //              $('.GPATable').html('<table cellpadding="0" cellspacing="0"  style="width:95%" class="display" id="coursesTaken"></table>');
-             var gradepoints = 0;
-             var credithours = 0;
-             for (var i = 0; i < data.length; i++) {
-                 if (data[i][2] == "A") {
-                     gradepoints = gradepoints + (4 * data[i][1]);
-                     credithours = credithours + (1 * data[i][1]);
-                 } else if (data[i][2] == "A-") {
-                     gradepoints = gradepoints + (3.70 * data[i]
-                         [1]);
-                     credithours = credithours + (1 * data[i][1]);
-                 } else if (data[i][2] == "B+") {
-                     gradepoints = gradepoints + (3.33 * data[i]
-                         [1]);
-                     credithours = credithours + (1 * data[i][1]);
-                 } else if (data[i][2] == "B") {
-                     gradepoints = gradepoints + (3.3 * data[i]
-                         [1]);
-                     credithours = credithours + (1 * data[i][1]);
-                 } else if (data[i][2] == "B-") {
-                     gradepoints = gradepoints + (2.70 * data[i]
-                         [1]);
-                     credithours = credithours + (1 * data[i][1]);
-                 } else if (data[i][2] == "C+") {
-                     gradepoints = gradepoints + (2.30 * data[i]
-                         [1]);
-                     credithours = credithours + (1 * data[i][1]);
-                 } else if (data[i][2] == "C") {
-                     gradepoints = gradepoints + (2 * data[i][1]);
-                     credithours = credithours + (1 * data[i][1]);
-                 } else if (data[i][2] == "C-") {
-                     gradepoints = gradepoints + (1.70 * data[i]
-                         [1]);
-                     credithours = credithours + (1 * data[i][1]);
-                 } else if (data[i][2] == "D+") {
-                     gradepoints = gradepoints + (1.30 * data[i]
-                         [1]);
-                     credithours = credithours + (1 * data[i][1]);
-                 } else if (data[i][2] == "D") {
-                     gradepoints = gradepoints + (1.0 * data[i]
-                         [1]);
-                     credithours = credithours + (1 * data[i][1]);
-                 } else if (data[i][2] == "D-") {
-                     gradepoints = gradepoints + (0.70 * data[i]
-                         [1]);
-                     credithours = credithours + (1 * data[i][1]);
-                 } else if (data[i][2] == "F") {
-                     gradepoints = gradepoints + (0 * data[i][1]);
-                     credithours = credithours + (1 * data[i][1]);
-                 } else if (data[i][2] == "IP") {
-                     gradepoints = gradepoints + (0 * data[i][1]);
-                     credithours = credithours + (0 * data[i][1]);
-                 } else {
-                     gradepoints = gradepoints + (0 * data[i][1]);
-                     credithours = credithours + (0 * data[i][1]);
-                 }
-             }
-             var gpa = gradepoints / credithours
-             gpa = Math.round(gpa * 100) / 100;
-             $("#GPACalc").replaceWith('<p id = "GPACalc">' +
-                 gpa + '</p>');
+            
+           
 
   
 
@@ -2152,7 +1839,7 @@ var divId = "#itemDetails" + aData[0];
              var curGPAtext = $('#GPACalc').text();
              var curGPA = parseFloat(curGPAtext);
              var reqGrd = parseFloat(reqGrdtext);
-             if (curGPA >= reqGrdtext) {
+           /*  if (curGPA >= reqGrdtext) {
                  $("#GPACalc").css('color', ' #E6C12B');
 								var glow = $('#GPACalc');
 				setInterval(function(){
@@ -2165,6 +1852,8 @@ var divId = "#itemDetails" + aData[0];
     glow.hasClass('glowoff') ? glow.removeClass('glowoff') : glow.addClass('glowoff');
 }, 2000);
              }
+
+*/
          },
          error: function(XMLHttpRequest, textStatus, errorThrown) {
              alert(errorThrown);
@@ -2179,97 +1868,11 @@ var divId = "#itemDetails" + aData[0];
          sto_addItem(course, credits, grade, major);
          $("tr:contains('" + course + "')").each(function() {
              courseNeeded.fnDeleteRow(this);
-             var oSettings = $('#coursesTaken').dataTable().fnSettings();
-             var rowCount = oSettings.fnRecordsTotal();
-             var gradesForGPA = [];
-             var creditsForGPA = [];
-             for (var i = 0; i < rowCount; i++) {
-                 var id = $('#coursesTaken').dataTable().fnGetData(
-                     i, 2);
-                 gradesForGPA.push(id);
-                 var id2 = $('#coursesTaken').dataTable().fnGetData(
-                     i, 1);
-                 creditsForGPA.push(id2);
-             }
-             gradesForGPA.push(grade);
-             creditsForGPA.push(credits);
-             fnGPACalc(gradesForGPA, creditsForGPA);
+            //fnnn
          });
      }
 
-     function fnGPACalc(grades, credits) {
-         var gradepoints = 0;
-         var credithours = 0;
-         for (var i = 0; i < grades.length; i++) {
-             if (grades[i] == "A") {
-                 gradepoints = gradepoints + (4 * credits[i]);
-                 credithours = credithours + (1 * credits[i]);
-             } else if (grades[i] == "A-") {
-                 gradepoints = gradepoints + (3.70 * credits[i]);
-                 credithours = credithours + (1 * credits[i]);
-             } else if (grades[i] == "B+") {
-                 gradepoints = gradepoints + (3.33 * credits[i]);
-                 credithours = credithours + (1 * credits[i]);
-             } else if (grades[i] == "B") {
-                 gradepoints = gradepoints + (3.3 * credits[i]);
-                 credithours = credithours + (1 * credits[i]);
-             } else if (grades[i] == "B-") {
-                 gradepoints = gradepoints + (2.70 * credits[i]);
-                 credithours = credithours + (1 * credits[i]);
-             } else if (grades[i] == "C+") {
-                 gradepoints = gradepoints + (2.30 * credits[i]);
-                 credithours = credithours + (1 * credits[i]);
-             } else if (grades[i] == "C") {
-                 gradepoints = gradepoints + (2 * credits[i]);
-                 credithours = credithours + (1 * credits[i]);
-             } else if (grades[i] == "C-") {
-                 gradepoints = gradepoints + (1.70 * credits[i]);
-                 credithours = credithours + (1 * credits[i]);
-             } else if (grades[i] == "D+") {
-                 gradepoints = gradepoints + (1.30 * credits[i]);
-                 credithours = credithours + (1 * credits[i]);
-             } else if (grades[i] == "D") {
-                 gradepoints = gradepoints + (1.0 * credits[i]);
-                 credithours = credithours + (1 * credits[i]);
-             } else if (grades[i] == "D-") {
-                 gradepoints = gradepoints + (0.70 * credits[i]);
-                 credithours = credithours + (1 * credits[i]);
-             } else if (grades[i] == "F") {
-                 gradepoints = gradepoints + (0 * credits[i]);
-                 credithours = credithours + (1 * credits[i]);
-             } else if (grades[i] == "IP") {
-                 gradepoints = gradepoints + (0 * credits[i]);
-                 credithours = credithours + (0 * credits[i]);
-             } else {
-                 gradepoints = gradepoints + (0 * credits[i]);
-                 credithours = credithours + (0 * credits[i]);
-             }
-         }
-         var gpa = gradepoints / credithours
-         gpa = Math.round(gpa * 100) / 100;
-         var text = $('#data p:first').text();
-         var reqGrd = parseFloat(text);
-         if (gpa >= reqGrd) {
-             $("#GPACalc").css('color', ' #E6C12B');
-			
-         } else {
-             $("#GPACalc").css('color', 'black');
-         }
-         $("#GPACalc").replaceWith('<p id = "GPACalc">' + gpa + '</p>');
-         if (gpa >= reqGrd) {
-             $("#GPACalc").css('color', '#E6C12B');
-					var glow = $('#GPACalc');
-				setInterval(function(){
-    glow.hasClass('glow') ? glow.removeClass('glow') : glow.addClass('glow');
-}, 2000);
-         } else {
-             $("#GPACalc").css('color', 'black');
-				    var glow = $('#GPACalc');
-				setInterval(function(){
-    glow.hasClass('glowoff') ? glow.removeClass('glowoff') : glow.addClass('glowoff');
-}, 2000);
-         }
-     }
+   
 
 
             
@@ -2278,7 +1881,7 @@ var divId = "#itemDetails" + aData[0];
          url: OvrlDashphpURL,
          dataType: 'json',
          data: {
-             action: 'getUser',
+             action: 'getUser'
          },
          success: function(data) {
              $("#studName").append(', ' + data.name);
@@ -2322,7 +1925,7 @@ var divId = "#itemDetails" + aData[0];
          url: OvrlDashphpURL,
          dataType: 'json',
          data: {
-             action: 'getGradProgram',
+             action: 'getGradProgram'
          },
          success: function(data) {
              graddata = data;
@@ -2343,7 +1946,26 @@ var divId = "#itemDetails" + aData[0];
 
      });
 
+$.ajax({
+         type: 'POST',
+         url: OvrlDashphpURL,
+         dataType: 'json',
+         data: {
+             action: 'getCurrentProgram'
+         },
+         success: function(data) {
+             
+                
+            
+                     $('#studentMajData p').append(data[0][0]);
+                 
+             
+         },
+         error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert(errorThrown);
+         }
 
+     });
 
  }
 

@@ -434,6 +434,21 @@ background-color: #fff;
     float: left;
     width: 55%;
 }
+#studentMajText {
+ float: left;
+width: 45%;
+text-align: left;
+}
+#studentMajData {
+float: left;
+width: 55%;
+
+}
+#studentMajData p {
+float: left;
+width: 100%;
+color: #112d54;
+}
 
 #data select {
     width: 100%;

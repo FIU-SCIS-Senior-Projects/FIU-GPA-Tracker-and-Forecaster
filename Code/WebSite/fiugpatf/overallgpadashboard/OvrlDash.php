@@ -289,21 +289,7 @@ if ($action == "getMajorBucketsNeeded") {
     while ($stmt->fetch()) {
         $parent = "NOT SET";
         
-        //given a bucket name(description), find child buckets
-   /*    
-       if(     $query = $mysqli->prepare("SELECT description, allRequired, parentID FROM MajorBucket WHERE majorID in (SELECT majorID FROM StudentMajor WHERE userID = '1') and parentID in (select bucketID FROM MajorBucket where description = 'humanities')")){
-            $query->execute();
-            $query->store_result();
-            $query->bind_result($output10);
-            $query->fetch();
-            
-            if ($query->num_rows() > 0) {
-                $parent = "YES";
-            } else {
-                $parent = "NO";
-            }
-        }
-    */    
+    
         if ($allReq == 1) {
             $allR = "YES";
         } else
@@ -762,6 +748,44 @@ if ($action == "getGradProgram") {
         array_push($output4, array(
             $prg,
             $gpa
+        ));
+    }
+    echo json_encode($output4);
+    
+}
+
+// SELECT StudentCourse.grade, CourseInfo.credits FROM StudentCourse inner join  CourseInfo on StudentCourse.courseInfoID = CourseInfo.courseInfoID  AND StudentCourse.grade Not in (Select grade from StudentCourse WHERE grade = 'ND' or grade = 'IP') AND StudentCourse.userID in (select userID From Users Where userID = '1')
+
+
+
+if ($action == "getGPA") {
+    $user  = $_SESSION['username'];
+	 $userID = $_SESSION['userID'];
+    $stmt5 = $mysqli->prepare("SELECT StudentCourse.grade, CourseInfo.credits FROM StudentCourse inner join  CourseInfo on StudentCourse.courseInfoID = CourseInfo.courseInfoID  AND StudentCourse.grade Not in (Select grade from StudentCourse WHERE grade = 'ND' or grade = 'IP') AND StudentCourse.userID in (select userID From Users Where userID = '".$userID."')");
+    $stmt5->execute();
+    $stmt5->bind_result($grades,$credits);
+    $output4 = array();
+    while ($stmt5->fetch()) {
+        array_push($output4, array(
+            $grades,$credits
+        ));
+    }
+    echo json_encode($output4);
+    
+}
+
+
+
+if ($action == "getCurrentProgram") {
+    $user  = $_SESSION['username'];
+	 $userID = $_SESSION['userID'];
+    $stmt5 = $mysqli->prepare("SELECT majorName FROM Major Where majorID in (Select majorID From StudentMajor Where userID ='".$userID."') ");
+    $stmt5->execute();
+    $stmt5->bind_result($currentProg);
+    $output4 = array();
+    while ($stmt5->fetch()) {
+        array_push($output4, array(
+            $currentProg
         ));
     }
     echo json_encode($output4);

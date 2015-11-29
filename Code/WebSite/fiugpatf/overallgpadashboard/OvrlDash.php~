@@ -55,7 +55,7 @@ if ($action == "addExtraCourse") {
             
             //if the course is in CourseInfo table, then check the courses in the major
             
-            $sql    = "SELECT courseInfoID FROM MajorBucketRequiredCourses WHERE  courseInfoID = '" . $course[0] . "' And bucketID = bucketID in (Select bucketID From MajorBucket Where description = '" . $bucket . "' and majorID = majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')) ";
+            $sql    = "SELECT courseInfoID FROM MajorBucketRequiredCourses WHERE  courseInfoID = '" . $course[0] . "' And bucketID = bucketID in (Select bucketID From MajorBucket Where description = '" . $bucket . "' and majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')) ";
             $query2 = $mysqli->prepare($sql);
             $query2->execute();
             $query2->bind_result($output3);
@@ -65,7 +65,7 @@ if ($action == "addExtraCourse") {
                 {
                 $grade       = "ND";
                 $weight      = "3";
-                $getBucketID = $mysqli->prepare("SELECT bucketID FROM MajorBucket WHERE  description  = '" . $bucket . "' AND majorID = majorID in (Select majorID From StudentMajor where userID = '" . $userID . "') ");
+                $getBucketID = $mysqli->prepare("SELECT bucketID FROM MajorBucket WHERE  description  = '" . $bucket . "' AND majorID in (Select majorID From StudentMajor where userID = '" . $userID . "') ");
                 $getBucketID->execute();
                 $getBucketID->bind_result($BID);
                 $bucketRef = array();
@@ -128,7 +128,7 @@ if ($action == "getMinReq") {
 SELECT DISTINCT CourseInfo.courseID, CourseInfo.credits, StudentCourse.grade, StudentCourse.selected FROM CourseInfo INNER JOIN StudentCourse ON  
 CourseInfo.courseInfoID = StudentCourse.courseInfoID AND StudentCourse.courseInfoID in
  (Select  courseInfoID From MajorBucketRequiredCourses where bucketID in (Select bucketID FROM MajorBucket where description =  '" . $bucket . "' AND 
- majorID = majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')))
+ majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')))
  AND userID = '" . $userID . "' AND  StudentCourse.selected in
  (SELECT selected FROM StudentCourse WHERE selected= '1') 
     
@@ -141,13 +141,13 @@ CourseInfo.courseInfoID = StudentCourse.courseInfoID AND StudentCourse.courseInf
 
 UNION
  Select CourseInfo.courseID, CourseInfo.credits,  StudentCourse.grade, StudentCourse.selected From StudentCourse inner join CourseInfo ON StudentCourse.referenceBucket in 
- (Select bucketID from MajorBucket Where description =  '" . $bucket . "' AND majorID = majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')) AND
+ (Select bucketID from MajorBucket Where description =  '" . $bucket . "' AND  majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')) AND
  StudentCourse.courseInfoID = CourseInfo.courseInfoID  AND  StudentCourse.selected in
  (SELECT selected FROM StudentCourse WHERE selected= '1')
 
    UNION 
  Select CourseInfo.courseID, CourseInfo.credits,  StudentCourse.grade, StudentCourse.selected From StudentCourse inner join CourseInfo ON StudentCourse.referenceBucket in 
- (Select bucketID from MajorBucket Where description =  'CS Natural Sciences' AND majorID = majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')) AND 
+ (Select bucketID from MajorBucket Where description =  'CS Natural Sciences' AND majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')) AND 
  StudentCourse.courseInfoID = CourseInfo.courseInfoID AND NOT  StudentCourse.grade in (SELECT grade FROM StudentCourse WHERE grade = 'ND') 
 
   )a;
@@ -179,7 +179,7 @@ if ($action == "getMajorBuckets") {
         array_push($userID, $output1);
         
     }
-    $stmt = $mysqli->prepare("SELECT description, allRequired FROM MajorBucket WHERE majorID = majorID in (SELECT majorID FROM StudentMajor WHERE userID = '" . $userID[0] . "')  and parentID IS NULL");
+    $stmt = $mysqli->prepare("SELECT description, allRequired FROM MajorBucket WHERE majorID in (SELECT majorID FROM StudentMajor WHERE userID = '" . $userID[0] . "')  and parentID IS NULL");
     
     $stmt->execute();
     $stmt->bind_result($desc, $allReq);
@@ -211,9 +211,9 @@ if ($action == "getMajorBucketsCourse") {
     }
     $user   = $_SESSION['username'];
     $userID = $_SESSION['userID'];
-    $stmt   = $mysqli->prepare("SELECT DISTINCT CourseInfo.courseID, CourseInfo.credits, StudentCourse.grade FROM CourseInfo INNER JOIN StudentCourse ON  CourseInfo.courseInfoID = StudentCourse.courseInfoID AND StudentCourse.courseInfoID in (Select  courseInfoID From MajorBucketRequiredCourses where bucketID in (Select bucketID FROM MajorBucket where description =  '" . $bucket . "' AND majorID = majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')))AND userID = '" . $userID . "' AND NOT StudentCourse.grade in (SELECT grade FROM StudentCourse WHERE grade = 'ND') 
+    $stmt   = $mysqli->prepare("SELECT DISTINCT CourseInfo.courseID, CourseInfo.credits, StudentCourse.grade FROM CourseInfo INNER JOIN StudentCourse ON  CourseInfo.courseInfoID = StudentCourse.courseInfoID AND StudentCourse.courseInfoID in (Select  courseInfoID From MajorBucketRequiredCourses where bucketID in (Select bucketID FROM MajorBucket where description =  '" . $bucket . "' AND majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')))AND userID = '" . $userID . "' AND NOT StudentCourse.grade in (SELECT grade FROM StudentCourse WHERE grade = 'ND') 
 UNION
- Select CourseInfo.courseID, CourseInfo.credits, StudentCourse.grade  From StudentCourse inner join CourseInfo ON StudentCourse.referenceBucket in (Select bucketID from MajorBucket Where description =  '" . $bucket . "' AND majorID = majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')) AND NOT StudentCourse.grade in (SELECT grade FROM StudentCourse WHERE grade = 'ND')AND  StudentCourse.courseInfoID = CourseInfo.courseInfoID");
+ Select CourseInfo.courseID, CourseInfo.credits, StudentCourse.grade  From StudentCourse inner join CourseInfo ON StudentCourse.referenceBucket in (Select bucketID from MajorBucket Where description =  '" . $bucket . "' AND  majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')) AND NOT StudentCourse.grade in (SELECT grade FROM StudentCourse WHERE grade = 'ND')AND  StudentCourse.courseInfoID = CourseInfo.courseInfoID");
     
     $stmt->execute();
     $stmt->bind_result($desc, $cred, $grade);
@@ -241,7 +241,7 @@ if ($action == "getMajorBucketsChildBuckets") {
   $userID  = $_SESSION['userID'];	
 
 // get child buckets of $bucket
- $stmt = $mysqli->prepare("SELECT description, allRequired FROM MajorBucket WHERE majorID = majorID in (SELECT majorID FROM StudentMajor WHERE userID = '" . $userID . "') and parentID in (Select bucketID From MajorBucket Where description = '".$bucket."' AND majorID in (select majorID FROM StudentMajor WHERE userID = '".$userID."'))"); 
+ $stmt = $mysqli->prepare("SELECT description, allRequired FROM MajorBucket WHERE  majorID in (SELECT majorID FROM StudentMajor WHERE userID = '" . $userID . "') and parentID in (Select bucketID From MajorBucket Where description = '".$bucket."' AND majorID in (select majorID FROM StudentMajor WHERE userID = '".$userID."'))"); 
 	$stmt->execute();
     $stmt->bind_result($desc, $allReq);
     $output = array();
@@ -280,7 +280,7 @@ if ($action == "getMajorBucketsNeeded") {
     }
     
     //get all buckets whose parentID is null
-    $stmt = $mysqli->prepare("SELECT description, allRequired FROM MajorBucket WHERE majorID = majorID in (SELECT majorID FROM StudentMajor WHERE userID = '" . $userID[0] . "') and parentID IS NULL");
+    $stmt = $mysqli->prepare("SELECT description, allRequired FROM MajorBucket WHERE  majorID in (SELECT majorID FROM StudentMajor WHERE userID = '" . $userID[0] . "') and parentID IS NULL");
     
     $stmt->execute();
     $stmt->bind_result($desc, $allReq);
@@ -289,21 +289,7 @@ if ($action == "getMajorBucketsNeeded") {
     while ($stmt->fetch()) {
         $parent = "NOT SET";
         
-        //given a bucket name(description), find child buckets
-   /*    
-       if(     $query = $mysqli->prepare("SELECT description, allRequired, parentID FROM MajorBucket WHERE majorID = majorID in (SELECT majorID FROM StudentMajor WHERE userID = '1') and parentID in (select bucketID FROM MajorBucket where description = 'humanities')")){
-            $query->execute();
-            $query->store_result();
-            $query->bind_result($output10);
-            $query->fetch();
-            
-            if ($query->num_rows() > 0) {
-                $parent = "YES";
-            } else {
-                $parent = "NO";
-            }
-        }
-    */    
+    
         if ($allReq == 1) {
             $allR = "YES";
         } else
@@ -327,7 +313,7 @@ if (isset($_POST['bucket'])) {
     $user   = $_SESSION['username'];
     $userID = $_SESSION['userID'];
        
-if($query = $mysqli->prepare("SELECT description, allRequired, parentID FROM MajorBucket WHERE majorID = majorID in (SELECT majorID FROM StudentMajor WHERE userID = '".$userID."') and parentID in (select bucketID FROM MajorBucket where description = '".$bucket."')")){
+if($query = $mysqli->prepare("SELECT description, allRequired, parentID FROM MajorBucket WHERE  majorID in (SELECT majorID FROM StudentMajor WHERE userID = '".$userID."') and parentID in (select bucketID FROM MajorBucket where description = '".$bucket."')")){
             $query->execute();
             $query->store_result();
             $query->bind_result($output10);
@@ -358,10 +344,10 @@ if ($action == "getMajorBucketsCourseNeeded") {
     $user   = $_SESSION['username'];
     $userID = $_SESSION['userID'];
     $stmt   = $mysqli->prepare("
-SELECT DISTINCT CourseInfo.courseID, CourseInfo.credits, StudentCourse.weight, StudentCourse.relevance, StudentCourse.courseInfoID, StudentCourse.selected FROM StudentCourse INNER JOIN CourseInfo ON CourseInfo.courseInfoID in (Select courseInfoID From MajorBucketRequiredCourses where bucketID in (Select bucketID FROM MajorBucket where description = '" . $bucket . "' AND majorID = majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')))AND CourseInfo.courseInfoID in (SELECT courseInfoID From StudentCourse Where userID = '" . $userID . "' AND grade = 'ND' )  AND StudentCourse.courseInfoID = CourseInfo.courseInfoID
+SELECT DISTINCT CourseInfo.courseID, CourseInfo.credits, StudentCourse.weight, StudentCourse.relevance, StudentCourse.courseInfoID, StudentCourse.selected FROM StudentCourse INNER JOIN CourseInfo ON CourseInfo.courseInfoID in (Select courseInfoID From MajorBucketRequiredCourses where bucketID in (Select bucketID FROM MajorBucket where description = '" . $bucket . "' AND  majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')))AND CourseInfo.courseInfoID in (SELECT courseInfoID From StudentCourse Where userID = '" . $userID . "' AND grade = 'ND' )  AND StudentCourse.courseInfoID = CourseInfo.courseInfoID
 
 UNION
- Select CourseInfo.courseID, CourseInfo.credits, StudentCourse.weight, StudentCourse.relevance, StudentCourse.courseInfoID, StudentCourse.selected From StudentCourse inner join CourseInfo ON StudentCourse.referenceBucket in (Select bucketID from MajorBucket Where description =  '" . $bucket . "' AND majorID = majorID in (Select majorID From StudentMajor where userID = '" . $userID . "'))AND StudentCourse.grade = 'ND' AND StudentCourse.courseInfoID = CourseInfo.courseInfoID
+ Select CourseInfo.courseID, CourseInfo.credits, StudentCourse.weight, StudentCourse.relevance, StudentCourse.courseInfoID, StudentCourse.selected From StudentCourse inner join CourseInfo ON StudentCourse.referenceBucket in (Select bucketID from MajorBucket Where description =  '" . $bucket . "' AND majorID in (Select majorID From StudentMajor where userID = '" . $userID . "'))AND StudentCourse.grade = 'ND' AND StudentCourse.courseInfoID = CourseInfo.courseInfoID
 ");
     
     $stmt->execute();
@@ -762,6 +748,44 @@ if ($action == "getGradProgram") {
         array_push($output4, array(
             $prg,
             $gpa
+        ));
+    }
+    echo json_encode($output4);
+    
+}
+
+// SELECT StudentCourse.grade, CourseInfo.credits FROM StudentCourse inner join  CourseInfo on StudentCourse.courseInfoID = CourseInfo.courseInfoID  AND StudentCourse.grade Not in (Select grade from StudentCourse WHERE grade = 'ND' or grade = 'IP') AND StudentCourse.userID in (select userID From Users Where userID = '1')
+
+
+
+if ($action == "getGPA") {
+    $user  = $_SESSION['username'];
+	 $userID = $_SESSION['userID'];
+    $stmt5 = $mysqli->prepare("SELECT StudentCourse.grade, CourseInfo.credits FROM StudentCourse inner join  CourseInfo on StudentCourse.courseInfoID = CourseInfo.courseInfoID  AND StudentCourse.grade Not in (Select grade from StudentCourse WHERE grade = 'ND' or grade = 'IP') AND StudentCourse.userID in (select userID From Users Where userID = '".$userID."')");
+    $stmt5->execute();
+    $stmt5->bind_result($grades,$credits);
+    $output4 = array();
+    while ($stmt5->fetch()) {
+        array_push($output4, array(
+            $grades,$credits)
+        ));
+    }
+    echo json_encode($output4);
+    
+}
+
+
+
+if ($action == "getCurrentProgram") {
+    $user  = $_SESSION['username'];
+	 $userID = $_SESSION['userID'];
+    $stmt5 = $mysqli->prepare("SELECT majorName FROM Major Where majorID in (Select majorID From StudentMajor Where userID ='".$userID."') ");
+    $stmt5->execute();
+    $stmt5->bind_result($currentProg);
+    $output4 = array();
+    while ($stmt5->fetch()) {
+        array_push($output4, array(
+            $currentProg
         ));
     }
     echo json_encode($output4);
