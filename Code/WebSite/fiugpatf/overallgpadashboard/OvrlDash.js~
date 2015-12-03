@@ -26,6 +26,8 @@
  var nCredits = "";
  var nGrade = "";
  var nMajor = "";
+var noes = 0;
+var met=0;
 var append = false;
  function sto_formatStoreManagerDetails(oTable, nTr) {
      var aData = oTable.fnGetData(nTr);
@@ -355,7 +357,7 @@ function sto_rowClickHandler5() {
              var text = $('#data p:first').text();
              var reqGrd = parseInt(text);
            // alert(gpa +" gpa after calc");
-             $("#GPACalc").replaceWith('<p id = "GPACalc">' +
+             $("#GPACalc").replaceWith('<p id = "GPACalc" style = "font-size:16px;">' +
                  gpa + '</p>');
        /*      if (gpa >= reqGrd) {
                  $("#GPACalc").css('color', '#E6C12B');
@@ -430,6 +432,158 @@ function removeSpace(string)
 	}
 	return string;
 }
+
+function getMet(data){
+for (var i = 0; i < data.length; i++)
+{
+	if(data[i][2] == "NO")
+		{
+			//alert("Out of " + noes + " buckets." + met +" have requirements satisfied");
+			var thisBucket = data[i][1];
+			if($("td:contains('"+thisBucket+"')").text().indexOf("Requirement") != -1)
+			{
+				met++;
+			} else{}
+		} else {}
+
+}
+
+if(noes == met)
+{
+//alert(noes + "met: " + met);
+alert(" All requirements have been selected. Ready for forecast");
+} else {
+alert("Classes have not been selected for forecast");
+}
+}
+
+
+function RequirementMet(bucket) {
+
+
+			
+			var OvrlDashphpURL = 'OvrlDash.php';
+		$.ajax({
+         type: 'POST',
+         url: OvrlDashphpURL,
+         dataType: 'json',
+         data: {
+             action: 'findChildBuckets',
+				 bucket: bucket
+				 
+         },
+         success: function(data) {
+//alert(JSON.stringify(data)+"data");
+if (data.success) {
+              // alert ("children found");
+					
+				 
+						GetBucketReqs(bucket);
+					
+             } else {
+              //  alert ("no child buckets");
+						
+					GetCourseReqs(bucket);
+     
+		 
+             }           
+
+					
+         },
+         error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("course doesnt exist");             
+				alert(errorThrown);
+         }
+     });	
+
+}
+
+
+ 
+
+function GetCourseReqs(bucket){
+var OvrlDashphpURL = 'OvrlDash.php';
+
+$.ajax({
+         type: 'POST',
+         url: OvrlDashphpURL,
+         dataType: 'json',
+         data: {
+             action: 'getMinReq',
+				 bucket: bucket
+         },
+         success: function(data) {
+             var change = bucket;
+				var changes = JSON.stringify(bucket);
+					//	alert("selected: "+data[0][0] + " req: "+data[0][1]);
+					if (data[0][0] >= data[0][1]){
+					//if the td containing the name of the bucket doesnt have "requirement met" inside of it
+					 if ($("td:contains('"+change+"')").text().indexOf("Requirement") == -1) {
+					
+		var elem = $("td:contains('"+change+"')");
+		//
+		elem.append('<p style = "font-size:9px;color:blue;" class = "appendReq'+bucket +'"> Requirement met</p>');
+								append = true;
+//alert("requirement met Req: " + data[0][0] + " selectd: " + data[0][1]   );
+}
+						
+				} else {
+					//alert("requirement not met");
+				 $("td:contains('"+change+"')").children().remove();
+				//('<p>').attr('class','appendReq' + bucket).remove   
+				append = false;
+					//alert("requirement not met");
+}
+					
+         },
+         error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert(errorThrown);
+         }
+     });
+}
+
+function GetBucketReqs(bucket){
+var OvrlDashphpURL = 'OvrlDash.php';
+
+$.ajax({
+         type: 'POST',
+         url: OvrlDashphpURL,
+         dataType: 'json',
+         data: {
+             action: 'getMinBucketReq',
+				 bucket: bucket
+         },
+         success: function(data) {
+             var change = bucket;
+				var changes = JSON.stringify(bucket);
+					//	alert("selected  from  bucketReqs: "+data[0][0] + " req: "+data[0][1]);
+					if (data[0][0] >= data[0][1]){
+					//if (append ==false){
+
+					 if ($("td:contains('"+change+"')").text().indexOf("Requirement") == -1) {
+					
+		var elem = $("td:contains('"+change+"')");
+		//
+		elem.append('<p style = "font-size:9px;color:blue;" class = "appendReq'+bucket +'"> Requirement met</p>');
+								append = true;
+//alert("requirement met Req: " + data[0][0] + " selectd: " + data[0][1]   );
+}
+						
+				} else {
+					//alert("requirement not met");
+				// $("td:contains('"+change+"')").children().remove();
+				//('<p>').attr('class','appendReq' + bucket).remove
+				append = false;
+					//alert("requirement not met");
+}
+					
+         },
+         error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert(errorThrown);
+         }
+     });
+}
+
 
  function sto_openDetailsRow4(nTr) {
      childTable2.fnOpen(nTr, sto_formatStoreManagerDetails2( childTable2,
@@ -795,7 +949,8 @@ var OvrlDashphpURL = 'OvrlDash.php';
         }],
 "bJQueryUI": true,
  "fixedColumns": true,
-"retrieve": true
+"retrieve": true,
+"iDisplayLength": 25
     });
 
             // $('#parentTableTaken').removeAttr("style");
@@ -1054,6 +1209,7 @@ function sto_openDetailsRowTaken(nTr) {
               childTableDT.fnDeleteRow(nTr);
              alert("Course Info for " + aData[0] + " deleted!");
 				GetGPA();
+				RequirementMet(bucket);
 
 }else {
              childTableDT.fnClose(nTr);
@@ -1141,7 +1297,8 @@ $.ajax({
             targets: [0]
         }],
 "bJQueryUI": true,
-"retrieve": true
+"retrieve": true,
+"iDisplayLength": 25
     });
 
             // $('#parentTableTaken').removeAttr("style");
@@ -1149,6 +1306,22 @@ $.ajax({
              $('#parentTable tbody tr td').on('click',
                  clickBucket);
             
+
+   for(var i = 0; i < data.length; i++)
+{
+				if(data[i][2] == "NO")
+{
+			  noes++;
+				RequirementMet(data[i][1]);
+}				
+}
+
+setTimeout(function(){ 
+getMet(data);
+
+}, 1000);
+
+
 	 function clickBucket() {
      var nTr = this.parentNode;
 		
@@ -1243,7 +1416,12 @@ var OvrlDashphpURL = 'OvrlDash.php';
 		});		
 			  $('#childBucketsDT'+ bucketHTMLID +' tbody tr td').off();
              $('#childBucketsDT' + bucketHTMLID +' tbody tr td').on('click', clickBucket2);
-			
+		
+
+	RequirementMet(bucket);
+
+
+
 
  function clickBucket2() {
      var nTr = this.parentNode;
@@ -1455,7 +1633,7 @@ function openBucket2(nTr, oTable){
 	var bucket = aData[1];
 	var req = aData[2];
 
-if (bucket != "CS Natural Sciences" && bucket != "UCC")
+if (bucket != "Natural Sciences - Group 1" && bucket != "Natural Sciences - Group 2")
 {
   oTable.fnOpen(nTr, sto_formatDataTableNeeded2(oTable,
          nTr), "ui-state-highlight");
@@ -1477,7 +1655,50 @@ if(sure)
    
 }); 
 
-function RequirementMet() {
+function RequirementMet(bucket) {
+
+
+			
+			var OvrlDashphpURL = 'OvrlDash.php';
+		$.ajax({
+         type: 'POST',
+         url: OvrlDashphpURL,
+         dataType: 'json',
+         data: {
+             action: 'findChildBuckets',
+				 bucket: bucket
+				 
+         },
+         success: function(data) {
+//alert(JSON.stringify(data)+"data");
+if (data.success) {
+               alert ("children found");
+					
+				 
+						
+					
+             } else {
+               // alert ("no child buckets");
+						
+					GetCourseReqs(bucket);
+     
+		 
+             }           
+
+					
+         },
+         error: function(XMLHttpRequest, textStatus, errorThrown) {
+				alert("course doesnt exist");             
+				alert(errorThrown);
+         }
+     });	
+
+}
+
+RequirementMet(bucket);
+ 
+
+function GetCourseReqs(bucket){
 $.ajax({
          type: 'POST',
          url: OvrlDashphpURL,
@@ -1489,6 +1710,7 @@ $.ajax({
          success: function(data) {
              var change = bucket;
 				var changes = JSON.stringify(bucket);
+					//	alert("selected: "+data[0][0] + " req: "+data[0][1]);
 					if (data[0][0] >= data[0][1]){
 					//if (append ==false){
 					 if ($("td:contains('"+change+"')").text().length/2 == bucket.length) {
@@ -1514,10 +1736,6 @@ $.ajax({
          }
      });
 }
-
-RequirementMet();
- 
-
 
 
 
@@ -1592,7 +1810,6 @@ var childTableDTNeededCourses2;
 			 CheckboxChange);
 
 
-
 function CheckboxChange() {
 		 
 
@@ -1636,7 +1853,7 @@ var OvrlDashphpURL = 'OvrlDash.php';
              alert(errorThrown);
          }
      });
-RequirementMet();
+RequirementMet(bucket);
 
 }
 
@@ -1904,7 +2121,7 @@ var divId = "#itemDetails" + aData[0];
                  var reqGrd = parseFloat(reqGrdtext);
                  //alert("Target gpa: " + reqGrd);
                  //alert(" cur gpa: " + curGPA);
-                 if (curGPA >= reqGrdtext) {
+              /*   if (curGPA >= reqGrdtext) {
                      $("#GPACalc").css('color', ' #E6C12B');
 						   	var glow = $('#GPACalc');
 				setInterval(function(){
@@ -1917,6 +2134,8 @@ var divId = "#itemDetails" + aData[0];
     glow.hasClass('glowoff') ? glow.removeClass('glowoff') : glow.addClass('glowoff');
 }, 2000);
                  }
+
+*/
              }
          }
      });

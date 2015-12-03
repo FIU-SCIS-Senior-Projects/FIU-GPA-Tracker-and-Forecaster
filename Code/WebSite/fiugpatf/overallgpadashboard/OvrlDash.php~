@@ -147,7 +147,7 @@ UNION
 
    UNION 
  Select CourseInfo.courseID, CourseInfo.credits,  StudentCourse.grade, StudentCourse.selected From StudentCourse inner join CourseInfo ON StudentCourse.referenceBucket in 
- (Select bucketID from MajorBucket Where description =  'CS Natural Sciences' AND majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')) AND 
+ (Select bucketID from MajorBucket Where description =  '" . $bucket . "' AND majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')) AND 
  StudentCourse.courseInfoID = CourseInfo.courseInfoID AND NOT  StudentCourse.grade in (SELECT grade FROM StudentCourse WHERE grade = 'ND') 
 
   )a;
@@ -168,6 +168,97 @@ UNION
     
     
 }
+
+
+if ($action == "getMinBucketReq") {
+    
+    if (isset($_POST['bucket'])) {
+        $bucket = $_POST['bucket'];
+    } else {
+        $bucket = "";
+    }
+    $userID = $_SESSION['userID'];
+    $user   = $_SESSION['username'];
+    $stmt5  = $mysqli->prepare("SELECT `quantityNeeded` FROM `MajorBucket` WHERE `description` = '" . $bucket . "' AND majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')");
+    $stmt5->execute();
+    $stmt5->bind_result($qtyN);
+    $output2 = array();
+    while ($stmt5->fetch()) {
+        array_push($output2, $qtyN);
+        
+    }
+    // get all child buckets name's
+    $stmt1 = $mysqli->prepare("SELECT description FROM MajorBucket WHERE  majorID in (SELECT majorID FROM StudentMajor WHERE userID = '".$userID."') and parentID in (select bucketID FROM MajorBucket where description = '".$bucket."')
+  ");
+    
+    $stmt1->execute();
+    $stmt1->bind_result($qtyS);
+    $output = array();
+	$selected = 0;
+    while ($stmt1->fetch()) {
+        $selected = $selected + totalSelect($qtyS);
+        
+    }
+	 array_push($output, array(
+            $selected,
+            $output2[0]
+        ));
+    echo json_encode($output);
+    
+    
+    
+}
+
+function totalSelect($qtyS){
+ $userID = $_SESSION['userID'];
+$total = 0;
+$bucket = $qtyS;
+$output = array();
+ $conn = new mysqli("localhost","root","sqliscool","GPA_Tracker");
+// get credits selected for a bucket (all IP courses and selected courses in the this major bucket. and also with referenceBucket
+
+ $stmt1 = $conn->prepare("Select SUM(credits) FROM (
+SELECT DISTINCT CourseInfo.courseID, CourseInfo.credits, StudentCourse.grade, StudentCourse.selected FROM CourseInfo INNER JOIN StudentCourse ON  
+CourseInfo.courseInfoID = StudentCourse.courseInfoID AND StudentCourse.courseInfoID in
+ (Select  courseInfoID From MajorBucketRequiredCourses where bucketID in (Select bucketID FROM MajorBucket where description =  '" . $bucket . "' AND 
+ majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')))
+ AND userID = '" . $userID . "' AND  StudentCourse.selected in
+ (SELECT selected FROM StudentCourse WHERE selected= '1') 
+    
+    UNION 
+ SELECT DISTINCT CourseInfo.courseID, CourseInfo.credits, StudentCourse.grade, StudentCourse.selected FROM CourseInfo INNER JOIN StudentCourse ON 
+	CourseInfo.courseInfoID = StudentCourse.courseInfoID AND StudentCourse.courseInfoID in
+	(Select  courseInfoID From MajorBucketRequiredCourses where bucketID in (Select bucketID FROM MajorBucket where description =  '" . $bucket . "' AND
+	majorID = majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')))
+	AND userID = '" . $userID . "' AND NOT  StudentCourse.grade in (SELECT grade FROM StudentCourse WHERE grade = 'ND') 
+
+UNION
+ Select CourseInfo.courseID, CourseInfo.credits,  StudentCourse.grade, StudentCourse.selected From StudentCourse inner join CourseInfo ON StudentCourse.referenceBucket in 
+ (Select bucketID from MajorBucket Where description =  '" . $bucket . "' AND  majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')) AND
+ StudentCourse.courseInfoID = CourseInfo.courseInfoID  AND  StudentCourse.selected in
+ (SELECT selected FROM StudentCourse WHERE selected= '1')
+
+   UNION 
+ Select CourseInfo.courseID, CourseInfo.credits,  StudentCourse.grade, StudentCourse.selected From StudentCourse inner join CourseInfo ON StudentCourse.referenceBucket in 
+ (Select bucketID from MajorBucket Where description =  '" . $bucket . "' AND majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')) AND 
+ StudentCourse.courseInfoID = CourseInfo.courseInfoID AND NOT  StudentCourse.grade in (SELECT grade FROM StudentCourse WHERE grade = 'ND') 
+
+  )a;
+  ");
+    
+    $stmt1->execute();
+    $stmt1->bind_result($qtySelected);
+    
+    while ($stmt1->fetch()) {
+     
+        $total = $qtySelected;
+    }
+
+	//$total = 7;
+
+return $total;
+}
+
 if ($action == "getMajorBuckets") {
     $user  = $_SESSION['username'];
     $stmt1 = $mysqli->prepare("SELECT userID FROM Users WHERE  userName  = ?");
@@ -767,7 +858,7 @@ if ($action == "getGPA") {
     $output4 = array();
     while ($stmt5->fetch()) {
         array_push($output4, array(
-            $grades,$credits)
+            $grades,$credits
         ));
     }
     echo json_encode($output4);
