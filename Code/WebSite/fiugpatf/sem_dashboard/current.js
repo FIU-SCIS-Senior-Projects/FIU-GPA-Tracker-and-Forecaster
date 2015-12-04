@@ -9,6 +9,7 @@ var breakRowNum;
 
 function start() {
     $('#current_course').html('<table cellpadding="0" cellspacing="0" border="0" class="display" id="ajax1"></table>');
+    $('#current_course').append('<div id="placeholder"></div>');
 	//$('#current_course').append('<button type="button" id="ExportButton">Export Data</button>');
 
     $.ajax({
@@ -35,6 +36,34 @@ function start() {
         }
     });
 
+	$.ajax({
+		type: 'POST',
+		url: 'getCurrCourse.php',
+		data: {
+		    action: 'GetGraphData'
+	    },
+		dataType: 'json',
+		success: function(data) {
+		    $.plot($('#placeholder'), data.slice(0, data.length - 1), {
+		    	xaxis:{
+		    		axisLabel: "Date",
+		    		ticks: data[data.length - 1]
+		    	},
+		    	yaxis:{
+		    		max: 100,
+		    		axisLabel: "Running Grade"
+		    	},
+		    	series:{
+		    		points: {
+		    			radius: 3
+		    		}
+		    	}
+		    });
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+		    alert(errorThrown);
+		}
+	});
 	//$('#ExportButton').click(function(){
 	//	exportData();
 	//});
