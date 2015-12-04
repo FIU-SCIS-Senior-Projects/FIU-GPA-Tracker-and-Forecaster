@@ -8,7 +8,7 @@ sec_session_start(); // secure way of starting a PHP session.
  
 if (isset($_POST['username'], $_POST['password'])) {
     $username = $_POST['username'];
-    $password = $_POST['password']; // The hashed password.
+    $password = $_POST['password'];
 
     if (login($username, $password, $mysqli) == true) {
 	$user = $username;

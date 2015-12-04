@@ -20,19 +20,12 @@ session_set_cookie_params($cookieParams["lifetime"],
 session_name($session_name);
 session_start();
 
-//For test purposes only
-if(!isset($_SESSION['userID']))
-{
-	$_SESSION['userID'] = 2;
-}
-
 if($_POST['action'] == 'tabs')
 {
     if(isset($_SESSION['userID']))
     {
         $mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
         $user = $_SESSION['userID'];
-        //ok.
         $stmt = $mysqli->prepare("SELECT assessmentName
         FROM   AssessmentType
         WHERE  studentCourseID in (SELECT studentCourseID
@@ -86,7 +79,7 @@ if($_POST['action'] == 'addGrade')
     {
         $mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
         $user = $_SESSION['userID'];
-        $stmt = $mysqli->prepare("INSERT into Assessment (assessmentTypeID, grade, studentCourseID) 
+        $stmt = $mysqli->prepare("INSERT into Assessment (assessmentTypeID, grade, studentCourseID, dateEntered) 
         VALUES ((select assessmentTypeID 
             FROM AssessmentType 
             WHERE StudentCourseID in (SELECT studentCourseID 
@@ -102,7 +95,7 @@ if($_POST['action'] == 'addGrade')
                 AND 
                 courseInfoID in (select courseInfoID 
                 FROM CourseInfo 
-                WHERE courseID = ?)))");
+                WHERE courseID = ?)), '" . date("Y-m-d") ."')");
         $stmt->bind_param('ssssss', $user, $_POST['course'], $_POST['assesment'], $_POST['grade'], $user, $_POST['course']);
         if($stmt->execute())
 		{
@@ -287,7 +280,7 @@ if($_POST['action'] == 'GetAllAssessments')
 
         if($totalPer == 0)
         {
-            array_push($output, array("Total", "No Grades"));
+            array_push($output, array("Total","" , "No Grades"));
         }
         else{
             array_push($output, array("Total", "", round($average/$totalPer, 2)));
@@ -297,6 +290,85 @@ if($_POST['action'] == 'GetAllAssessments')
         echo json_encode($output);
     }
 
+}
+
+if($_POST['action'] == 'PlotPoints') {
+	if(isset($_SESSION['userID'])) {
+		$mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
+        $user = $_SESSION['userID'];
+        $stmt = $mysqli->prepare("SELECT b.assessmentTypeID, b.percentage, a.grade, a.dateEntered
+        FROM   Assessment as a, AssessmentType as b
+        WHERE  a.studentCourseID in (SELECT studentCourseID
+        	FROM StudentCourse
+        	WHERE grade = 'IP' and userID = ? and courseInfoID in (select courseInfoID 
+        		FROM CourseInfo 
+        		WHERE courseID = ?))
+        AND
+        b.assessmentTypeID = a.assessmentTypeID
+        ORDER BY dateEntered");
+        $stmt->bind_param('ss', $user, $_POST['course']);
+        $stmt->execute();
+        $stmt->bind_result($ID, $per, $grade, $date);
+        
+        $x = 1;
+        $dates = array();
+        $points = array();
+        $runningGrades = array();
+        $currDate = "Empty";
+        
+        while($stmt->fetch()){
+        	if($currDate == "Empty")
+        	{
+        		$currDate = $date;
+        		array_push($dates, array($x, substr($date, 5)));
+        		array_push($runningGrades, array($ID, $per, $grade));
+        	}
+        	else if($currDate == $date)
+        	{
+        		array_push($runningGrades, array($ID, $per, $grade));
+        	}
+        	else {
+        		array_push($points, array($x, gradeUpTo($runningGrades)));
+        		array_push($runningGrades, array($ID, $per, $grade));
+        		$x++;
+        		$currDate = $date;
+        		array_push($dates, array($x, substr($date, 5)));
+        	}	
+        }
+        array_push($runningGrades, array($ID, $per, $grade));
+        array_push($points, array($x, gradeUpTo($runningGrades)));
+        array_push($points, $dates);
+        
+        echo json_encode($points);
+	}
+}
+
+function gradeUpTo($runningGrades){
+	$summationGrades = array();
+	foreach($runningGrades as $gradeInfo)
+	{
+		if(isset($summationGrades[$gradeInfo[0]]))
+		{
+			$summationGrades[$gradeInfo[0]][1] +=  $gradeInfo[2];
+			$summationGrades[$gradeInfo[0]][2]++;
+		}
+		else
+		{
+			$summationGrades[$gradeInfo[0]] = array($gradeInfo[1], $gradeInfo[2], 1);
+		}
+	}
+	
+	$totalPer = 0;
+	$runningAvg = 0;
+	
+	foreach($summationGrades as $summation)
+	{
+		$runningAvg += (($summation[1] / $summation[2]) * $summation[0] / 100);
+		$totalPer += $summation[0];
+	}
+	
+	$runningAvg = $runningAvg / $totalPer * 100;
+	return $runningAvg;
 }
 
 function averageAssess($category)

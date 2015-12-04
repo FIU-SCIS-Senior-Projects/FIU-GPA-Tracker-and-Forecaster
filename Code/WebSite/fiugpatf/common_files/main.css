@@ -202,4 +202,8 @@ ul ol {
 	padding-right: 1px;
 }
 
-
+#placeholder {
+	width: 900px;
+	height: 400px;
+	margin: auto;
+}

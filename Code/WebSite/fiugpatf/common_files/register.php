@@ -6,9 +6,10 @@ if($conn->connect_error) {
 	die("Connection failed: " . $conn->connect_error);
 }
 
+$hash_password = password_hash($_POST["password"], PASSWORD_DEFAULT);
 $stmt = $conn->prepare("INSERT INTO Users (email, username, password, firstName, lastName, type) 
 		VALUES (?, ?, ?, ?, ?, 0);");
-$stmt->bind_param('sssss', $_POST["email"], $_POST["username"], $_POST["password"], $_POST["first_name"], $_POST["last_name"]);
+$stmt->bind_param('sssss', $_POST["email"], $_POST["username"], $hash_password, $_POST["first_name"], $_POST["last_name"]);
 ?>
 
 <!DOCTYPE= html>
