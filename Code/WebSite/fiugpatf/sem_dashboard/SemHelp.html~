@@ -85,7 +85,7 @@
                         <li><a href="../overallgpadashboard/OvrlDash.html">GPA Dashboard</a></li>
                         <li><a href="current.html">Grade Dashboard</a></li>
                         <li><a href="../common_files/settings.html">Settings</a></li>
-                        <li><a href="../login.html">Logout</a></li>
+                        <li><a href="../common_files/logout.php">Logout</a></li>
                         <li>
                             <div class="dropdown">
                                 <a class="btn btn-default dropdown-toggle" data-toggle="dropdown">Help

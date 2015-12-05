@@ -7,13 +7,15 @@
 		<link type="text/css" rel="stylesheet" href="https://cdn.datatables.net/1.10.9/css/jquery.dataTables.min.css"/>
 		<link type="text/css" rel="stylesheet" href="../common_files/main.css"/>
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
-		<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
-		<script src="http://malsup.github.com/jquery.form.js"></script> 
 		<script src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+		<!--<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">-->
 		<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/jquery-ui.min.js"></script>
+		<script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js"></script>
+	<script type="text/javascript" src="http://raw.github.com/markrcote/flot-axislabels/master/jquery.flot.axislabels.js"></script>
+	<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.time.min.js"></script>
 		<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/overcast/jquery-ui.css">
 		<script type="text/javascript" src="nav.js"></script>
-		<script type="text/javascript" src="settings.js"></script>
+		<script type="text/javascript" src="current.js"></script>
 	</head>
 	<body>
 		<div class="yellowBar"></div>
@@ -29,8 +31,8 @@
 				</div>
 			</div>
 		</div>
-		<h1 class id="title">Settings</h1>
-		<div id ="settingsDiv">
+		<h1 class id="title">Current Courses</h1>
+		<div id ="current_course">
 		</div>
 		<div class="footer">
 		</div>
