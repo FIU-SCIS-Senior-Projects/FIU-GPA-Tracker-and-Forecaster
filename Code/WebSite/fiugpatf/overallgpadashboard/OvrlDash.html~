@@ -233,10 +233,10 @@
             <p id="GPACalc"></p>
         </div>
         <div class="importButton">
-            <ul id="forecast">
+           
                
-                <li><button href="">Generate Forecast</button></li>
-            </ul><!--    <ul id = "addmoddel">
+               <button id="forecast" href="">Generate Forecast</button>
+          <!--    <ul id = "addmoddel">
                     
                 <li><input id ="addButton" type = "submit" name = "Add" value = "ADD" ></li>
                         
