@@ -2309,7 +2309,7 @@ function getgraph(){
    var GPAFall10	= fnGPACalcReturn(allGrades, allCredits);
 	// alert("gpa from noew funct" + GPAFall10);
 //alert(gpa);
-var d1 = [[1,GPAFall10],[2,3.3],[3,3.0],[4,2.9],[5,3.2],[6,3.3],[7,3.5],[8,3.7],[9,3.4],[10,3.23],[11,3.5],[12,3.5],[13,3.6],[14,3.45],[15,gpa]];
+var d1 = [[1,gpa - 0.2],[2,gpa + 0.1],[3,gpa + 0.13],[4,gpa - 0.15],[5,gpa - 0.32],[6,gpa],[7,gpa - 0.21],[8,gpa - 0.12],[9,gpa - 0.15],[10,gpa - 0.28],[11,gpa - 0.2],[12,gpa]];
 var data1 = [d1];
     $.plot($("#placeholder"), data1,  {
 		    	xaxis:{
