@@ -867,6 +867,58 @@ if ($action == "getGPA") {
 
 
 
+
+if ($action == "GetGraphData") {
+    $user  = $_SESSION['username'];
+	 $userID = $_SESSION['userID'];
+    $stmt5 = $mysqli->prepare("SELECT StudentCourse.grade, CourseInfo.credits FROM `StudentCourse` inner join 
+CourseInfo on StudentCourse.grade not in (select grade from StudentCourse Where 
+grade = 'ND' or grade ='IP'or grade = 'TR') AND StudentCourse.semester = 'fall' and 
+StudentCourse.year <='2015' and StudentCourse.userID = '".$userID."' And CourseInfo.courseInfoID = StudentCourse.courseInfoID");
+    $stmt5->execute();
+    $stmt5->bind_result($currentGrade, $currentCredits);
+    $output4 = array();
+    while ($stmt5->fetch()) {
+        array_push($output4, array(
+            $currentGrade, $currentCredits
+        ));
+    }
+    echo json_encode($output4);
+    
+}
+
+
+
+
+if ($action == "GenerateForecast") {
+    $user  = $_SESSION['username'];
+	 $userID = $_SESSION['userID'];
+    $stmt = $mysqli->prepare("Select  f.creditsTaken, e.RemainingCredits From ((Select sum(CourseInfo.credits) as RemainingCredits From (Select a.courseInfoID From (SELECT courseInfoID FROM `MajorBucketRequiredCourses` Where bucketID in (Select  bucketID From MajorBucket Where majorID in (Select majorID From StudentMajor Where userID = '".$userID."') AND allRequired = '1'))a inner join StudentCourse on a.courseInfoID = StudentCourse.courseInfoID AND  StudentCourse.userID = '".$userID."' AND StudentCourse.grade = 'ND'
+
+UNION
+
+Select b.courseInfoID From (SELECT courseInfoID FROM `MajorBucketRequiredCourses` Where bucketID in (Select  bucketID From MajorBucket Where majorID  in (Select majorID From StudentMajor Where userID = '".$userID."') AND allRequired = '0'))b inner join StudentCourse on b.courseInfoID = StudentCourse.courseInfoID AND  StudentCourse.userID = '".$userID."' AND StudentCourse.grade = 'ND' and StudentCourse.selected = '1'
+
+)c inner join CourseInfo on CourseInfo.courseInfoID = c.courseInfoID)e
+JOIN
+(Select Sum(CourseInfo.credits) as creditsTaken from CourseInfo inner join StudentCourse on StudentCourse.courseInfoID = CourseInfo.courseInfoID AND StudentCourse.grade not in (Select grade from StudentCourse where grade = 'ND') AND StudentCourse.userID ='".$userID."')f)");
+
+    $stmt->execute();
+    $stmt->bind_result($creditsTaken,$creditsLeft);
+    $output = array();
+    while ($stmt->fetch()) {
+		 
+        array_push($output, array(
+            $creditsTaken, $creditsLeft
+        ));
+    }
+    echo json_encode($output);
+    
+}
+
+
+
+
 if ($action == "getCurrentProgram") {
     $user  = $_SESSION['username'];
 	 $userID = $_SESSION['userID'];

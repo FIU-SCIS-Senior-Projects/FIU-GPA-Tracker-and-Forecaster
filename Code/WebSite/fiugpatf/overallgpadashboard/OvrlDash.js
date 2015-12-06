@@ -29,6 +29,7 @@
 var noes = 0;
 var met=0;
 var append = false;
+var gpa = 0;
  function sto_formatStoreManagerDetails(oTable, nTr) {
      var aData = oTable.fnGetData(nTr);
      var id = aData[0];
@@ -293,6 +294,70 @@ function sto_rowClickHandler5() {
          addArrow(childTable1, nTr);
      });
  }
+
+function fnGPACalcReturn(grades, credits) {
+             var gradepoints = 0;
+             var credithours = 0;
+				//	alert("grades.length: " + grades.length + " grsds[i]: " + grades[0]);
+             for (var i = 0; i < grades.length; i++) {
+                 if (grades[i] == "A") {
+                     gradepoints = gradepoints + (4 * credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "A-") {
+                     gradepoints = gradepoints + (3.70 *
+                         credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "B+") {
+                     gradepoints = gradepoints + (3.33 *
+                         credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "B") {
+                     gradepoints = gradepoints + (3.3 * credits[
+                         i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "B-") {
+                     gradepoints = gradepoints + (2.70 *
+                         credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "C+") {
+                     gradepoints = gradepoints + (2.30 *
+                         credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "C") {
+                     gradepoints = gradepoints + (2 * credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "C-") {
+                     gradepoints = gradepoints + (1.70 *
+                         credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "D+") {
+                     gradepoints = gradepoints + (1.30 *
+                         credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "D") {
+                     gradepoints = gradepoints + (1.0 * credits[
+                         i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "D-") {
+                     gradepoints = gradepoints + (0.70 *
+                         credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "F") {
+                     gradepoints = gradepoints + (0 * credits[i]);
+                     credithours = credithours + (1 * credits[i]);
+                 } else if (grades[i] == "IP") {
+                     gradepoints = gradepoints + (0 * credits[i]);
+                     credithours = credithours + (0 * credits[i]);
+                 } else {
+                     gradepoints = gradepoints + (0 * credits[i]);
+                     credithours = credithours + (0 * credits[i]);
+                 }
+             }
+				
+              var thisGPA = gradepoints / credithours;
+             thisGPA = Math.round(thisGPA * 100) / 100;
+             return thisGPA;
+         }
  function fnGPACalc(grades, credits) {
              var gradepoints = 0;
              var credithours = 0;
@@ -351,12 +416,12 @@ function sto_rowClickHandler5() {
                      credithours = credithours + (0 * credits[i]);
                  }
              }
-				//	alert (gradepoints + " : gpts " +"cHrs: " +credithours);
-             var gpa = gradepoints / credithours;
+				
+              gpa = gradepoints / credithours;
              gpa = Math.round(gpa * 100) / 100;
              var text = $('#data p:first').text();
              var reqGrd = parseInt(text);
-           // alert(gpa +" gpa after calc");
+         
              $("#GPACalc").replaceWith('<p id = "GPACalc" style = "font-size:16px;">' +
                  gpa + '</p>');
        /*      if (gpa >= reqGrd) {
@@ -387,7 +452,7 @@ $.ajax({
          },
          success: function(data) {
             var allGrades = [];
-var allCredits =[];
+				var allCredits =[];
 
 					for(var i = 0; i < data.length; i++){
                allCredits.push(data[i][1]);
@@ -433,7 +498,7 @@ function removeSpace(string)
 	return string;
 }
 
-function getMet(data){
+function GenerateForecast(data){
 for (var i = 0; i < data.length; i++)
 {
 	if(data[i][2] == "NO")
@@ -452,9 +517,48 @@ if(noes == met)
 {
 //alert(noes + "met: " + met);
 alert(" All requirements have been selected. Ready for forecast.");
+
+var OvrlDashphpURL = 'OvrlDash.php';
+$.ajax({
+         type: 'POST',
+         url: OvrlDashphpURL,
+         dataType: 'json',
+         data: {
+             action: 'GenerateForecast'
+         },
+         success: function(data) {
+				
+             var GPAGoal = $("#data p:first").text();
+			
+				 var creditsTaken = data[0][0];
+				 var creditsLeft= data[0][1];
+                
+            var GPANeeded = GPAGoal * (0 + 1) + (GPAGoal - gpa) * (creditsTaken / creditsLeft);
+				var GPANeededFormatted = GPANeeded.toFixed(2);
+				   if ( GPANeeded >4)
+					alert("Goal GPA not attainable");
+				alert("Current GPA: "+ gpa + "\nDesired GPA: " + GPAGoal + "\nCredits Remaining: " + creditsLeft + "\n\nAVG GPA Needed: " + GPANeededFormatted +"\n\n");
+
+ 
+                  
+                 
+             
+         },
+         error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert(errorThrown);
+         }
+
+     });
+
+
+
+
+
 } else {
 alert("Classes have not been selected for forecast to be generated.");
 }
+
+
 }
 
 
@@ -914,8 +1018,12 @@ childTableTakenE.fnOpen(nTr, sto_formatStoreManagerDetails(childTableTakenE, nTr
 
 
  function start() {
-
 GetGPA();
+
+
+
+
+
 
 var OvrlDashphpURL = 'OvrlDash.php';
   $.ajax({
@@ -1306,6 +1414,8 @@ $.ajax({
              $('#parentTable tbody tr td').on('click',
                  clickBucket);
             
+ $("#forecast").click(function() {
+       
 
    for(var i = 0; i < data.length; i++)
 {
@@ -1317,9 +1427,16 @@ $.ajax({
 }
 
 setTimeout(function(){ 
-getMet(data);
+GenerateForecast(data);
 
 }, 1000);
+
+
+
+
+
+     });
+
 
 
 	 function clickBucket() {
@@ -2165,6 +2282,65 @@ var divId = "#itemDetails" + aData[0];
 
      });
 
+setTimeout(function(){ 
+getgraph();
+
+}, 1000);
+
+function getgraph(){
+
+  $.ajax({
+         type: 'POST',
+         url: OvrlDashphpURL,
+         dataType: 'json',
+         data: {
+             action: 'GetGraphData'
+         },
+         success: function(data) {
+			   var allGrades = [];
+				var allCredits =[];
+
+					for(var i = 0; i < data.length; i++){
+               allCredits.push(data[i][1]);
+					allGrades.push(data[i][0]);
+  
+}
+
+   var GPAFall10	= fnGPACalcReturn(allGrades, allCredits);
+	// alert("gpa from noew funct" + GPAFall10);
+//alert(gpa);
+var d1 = [[1,GPAFall10],[2,3.3],[3,3.0],[4,2.9],[5,3.2],[6,3.3],[7,3.5],[8,3.7],[9,3.4],[10,3.23],[11,3.5],[12,3.5],[13,3.6],[14,3.45],[15,gpa]];
+var data1 = [d1];
+    $.plot($("#placeholder"), data1,  {
+		    	xaxis:{
+		    		axisLabel: "Semester",
+		    		ticks: data1[d1.length - 1]
+		    	},
+		    	yaxis:{
+		    		max: 4,
+		    		axisLabel: "GPA"
+		    	},
+		    	series:{
+		    		points: {
+		    			radius: 3
+		    		}
+		    	
+}});
+
+
+
+           
+         },
+         error: function(XMLHttpRequest, textStatus, errorThrown) {
+             alert(errorThrown);
+         }
+
+     });
+
+
+
+
+}
 $.ajax({
          type: 'POST',
          url: OvrlDashphpURL,
@@ -2177,7 +2353,7 @@ $.ajax({
                 
             
                      $('#studentMajData p').append(data[0][0]);
-                 
+                 $('#studentMajData p').replaceWith('<p>' + data[0][0] + '</p>');
              
          },
          error: function(XMLHttpRequest, textStatus, errorThrown) {

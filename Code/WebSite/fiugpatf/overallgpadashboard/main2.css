@@ -87,6 +87,7 @@ ul ol {
     background-position: center center;
     background-attachment: fixed;
     padding-top: 5em;
+	 
 }
 
 .footer {
@@ -94,6 +95,7 @@ ul ol {
     background-color: #E6C12B;
     border-bottom: 2px solid #000;
     border-top: 1px solid #112d54;
+	 
 }
 
 .textbox {
@@ -152,6 +154,9 @@ ul ol {
     margin-bottom: 2em;
 }
 
+body {
+background-color: #e1dcd2;
+}
 .jumbotronOVRL {
     background-color: #e1dcd2;
     background-size: cover;
@@ -161,6 +166,7 @@ ul ol {
     width: 100%;
     height: 55em;
     padding-top: 1em;
+	 margin-bottom:100px;
 }
 
 .jumbotronOVRLabout {
@@ -378,8 +384,11 @@ background-color: #fff;
 
 .importButton {
     display: inline-block;
-    margin-left: 4.5%;
-    width: 42.5%;
+    margin-left: 80%;
+	margin-top: -40px;
+    width: 10.5%;
+	height: auto;
+float:top;
 }
 
 .importButton ul {
@@ -388,9 +397,9 @@ background-color: #fff;
 
 .importButton ul li {
     display: inline-block;
-    border-radius: 4px;
-    border: 1px solid #fff;
-    box-shadow: 0 1px 1px #000;
+   
+    
+    
     font-size: .9em;
 }
 
@@ -708,7 +717,13 @@ ul.dropdown-menu {
 
 } 
 
+#placeholder {
+    width: 500px;
+    height: 300px;
+	margin: 0 auto;
 
+	padding-bottom: 150px;
+}
 
 }
 
