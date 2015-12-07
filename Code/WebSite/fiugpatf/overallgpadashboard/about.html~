@@ -54,7 +54,7 @@
                         <a href="../common_files/settings.html">Settings</a>
                     </li>
                     <li>
-                        <a href="../login.html">Logout</a>
+                        <a href="../common_files/logout.php">Logout</a>
                     </li>
                     <li>
                         <div class="dropdown">
@@ -63,7 +63,7 @@
                             "caret"></span></a>
                             <ul class="dropdown-menu" style="margin-top: 1px;">
                                 <li>
-                                    <a href="OvrlDash_help.html">GPA Dashboard
+                                    <a href="OvrlDash_help_contents.html">GPA Dashboard
                                     Help</a>
                                 </li>
                                 <li>

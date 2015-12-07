@@ -23,6 +23,9 @@
     <link href=
     "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel=
     "stylesheet">
+		<script type="text/javascript" language="javascript" src="https://cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.min.js"></script>
+	<script type="text/javascript" src="http://raw.github.com/markrcote/flot-axislabels/master/jquery.flot.axislabels.js"></script>
+<script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/flot/0.8.2/jquery.flot.time.min.js"></script>
     <link href="main2.css" rel="stylesheet" type="text/css">
     <script src="nav.js" type="text/javascript">
     </script>
@@ -31,6 +34,12 @@
     rel="stylesheet">
     <script src='OvrlDash.js' type='text/javascript'>
     </script>
+
+
+
+
+
+
 </head>
 <body>
     <div class="yellowBar"></div>
@@ -80,6 +89,7 @@
         </div>
     </div>
     <div class="jumbotronOVRL">
+			
         <div class="top">
             <div class="screenPrivacy">
                 <p>screen privacy</p>
@@ -97,7 +107,7 @@
                     
                 </div>
 						<div id="studentMajData">
-                    <p>CSbhniubyubyuhnjknuyijhnyuhbkjnoij</p>
+                    <p>N/A</p>
                   
                 </div>
                 <div id="text">
@@ -223,10 +233,10 @@
             <p id="GPACalc"></p>
         </div>
         <div class="importButton">
-            <ul id="impfore">
-                <li><!--     <button href="">IMPORT</button>--></li>
-                <li><!--    <button href="">FORECAST</button>--></li>
-            </ul><!--    <ul id = "addmoddel">
+           
+               
+               <button id="forecast" href="">Generate Forecast</button>
+          <!--    <ul id = "addmoddel">
                     
                 <li><input id ="addButton" type = "submit" name = "Add" value = "ADD" ></li>
                         
@@ -236,8 +246,15 @@
                     
                     </ul> -->
         </div>
-
+			<div id="placeholder" style ="width:600px;height:300px;"> 
     </div>
+
+
+
+
+
+
+</div>
     <div class="footer"></div>
 </body>
 </html>

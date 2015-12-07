@@ -44,7 +44,7 @@
                         <a href="../common_files/insert_course.html">Course List</a>
                     </li>
                     <li>
-                        <a href="../common_files/logout.php">Logout</a>
+                        <a href="index.html">Logout</a>
                     </li>
                 </ul>
             </div>

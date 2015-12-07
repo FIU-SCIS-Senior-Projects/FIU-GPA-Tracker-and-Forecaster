@@ -254,7 +254,7 @@ UNION
         $total = $qtySelected;
     }
 
-	//$total = 7;
+	
 
 return $total;
 }
@@ -864,6 +864,49 @@ if ($action == "getGPA") {
     echo json_encode($output4);
     
 }
+
+
+
+
+if ($action == "GetGraphData") {
+    $user  = $_SESSION['username'];
+	 $userID = $_SESSION['userID'];
+    $stmt5 = $mysqli->prepare("SELECT StudentCourse.grade, CourseInfo.credits FROM `StudentCourse` inner join 
+CourseInfo on StudentCourse.grade not in (select grade from StudentCourse Where 
+grade = 'ND' or grade ='IP'or grade = 'TR') AND StudentCourse.semester = 'fall' and 
+StudentCourse.year <='2015' and StudentCourse.userID = '".$userID."' And CourseInfo.courseInfoID = StudentCourse.courseInfoID");
+    $stmt5->execute();
+    $stmt5->bind_result($currentGrade, $currentCredits);
+    $output4 = array();
+    while ($stmt5->fetch()) {
+        array_push($output4, array(
+            $currentGrade, $currentCredits
+        ));
+    }
+    echo json_encode($output4);
+    
+}
+
+
+
+
+if ($action == "GenerateForecast") {
+    $user  = $_SESSION['username'];
+	 $userID = $_SESSION['userID'];
+    $stmt = $mysqli->prepare("Select Sum(CourseInfo.credits) as creditsTaken from CourseInfo inner join StudentCourse on StudentCourse.courseInfoID = CourseInfo.courseInfoID AND StudentCourse.grade not in (Select grade from StudentCourse where grade = 'ND') AND StudentCourse.userID = '".$userID."'");
+    $stmt->execute();
+    $stmt->bind_result($creditsTaken);
+    $output = array();
+    while ($stmt->fetch()) {
+		$creditsLeft = creditsLeft()
+        array_push($output, array(
+            $creditsTaken
+        ));
+    }
+    echo json_encode($output);
+    
+}
+
 
 
 
