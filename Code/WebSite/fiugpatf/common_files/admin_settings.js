@@ -26,6 +26,30 @@ function start() {
 				$('#ExportButton').click(function(){
 					exportData();
 				});
+					importData();
+			
+
+			$('#DeleteButton').click(function(){
+				var del = confirm("Delete all data?");
+    			if (del == true) {
+					deleteData();
+				}
+			});
+			
+			$('#PDFimport').ajaxForm();
+			var control = document.getElementById("Whatif");
+				control.addEventListener("change", function(){
+					$('#PDFimport').ajaxSubmit();
+				}, false);
+			
+			$('#Reqimport').ajaxForm();
+			var control = document.getElementById("ImportReqirments");
+				control.addEventListener("change", function(){
+					$('#Reqimport').ajaxSubmit();
+				}, false);
+
+
+
         }
     });
 }
