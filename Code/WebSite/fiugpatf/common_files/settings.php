@@ -121,6 +121,7 @@ if($action == "importWhatif") {
 			$loc = $_FILES['file']['tmp_name'];
 			shell_exec('qpdf --password="" --decrypt ' . $loc . ' ' . $username . '/unencrypted.pdf');
 			$courseInfo = shell_exec('python PDFWhatIfParser.py ' . $username . '/unencrypted.pdf');
+			echo 'python PDFWhatIfParser.py ' . $username . '/unencrypted.pdf';
 			$allData = explode("!!!!", $courseInfo);
 			$majorData = explode("\n", $allData[0]);
 			$courses = explode("\n", $allData[1]);
@@ -130,6 +131,7 @@ if($action == "importWhatif") {
 			foreach ($majorData as $maj) {
 				if($maj != "")
 				{
+					echo "5";
 					$mysqli = new mysqli("localhost","sec_user","Uzg82t=u%#bNgPJw","GPA_Tracker");
 					$stmt = $mysqli->prepare("INSERT INTO StudentMajor (userID, majorID) VALUES (?, (SELECT majorID from Major WHERE majorName = ?))");
 					$stmt->bind_param('ss', $user, $maj);

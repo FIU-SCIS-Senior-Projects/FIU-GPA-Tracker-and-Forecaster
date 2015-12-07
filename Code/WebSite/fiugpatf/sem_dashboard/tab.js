@@ -38,7 +38,8 @@ function makeTabs(tabs)
     div += '<div id="addTab">';
     div += '         <table cellpadding="0" cellspacing="0" border="0" class="display" id="allAssess"></table>';
     div += '         <button type="button" id="addBreak" class="tabButton">Add Assessment</button>';
-    div += '         <div id="placeholder"></div>';
+    div += '         <div id="empty"><h1 id="gtitle">Grade Trends for ' + course +'</h1>'
+    div += '         <div id="placeholder"></div></div>';
     div += '</div>';
     $('#tabs').append(div);
     $('#tabs ul').append('<li><a href="#addTab">Assessment Managment</a></li>');

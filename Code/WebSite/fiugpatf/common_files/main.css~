@@ -223,9 +223,4 @@ ul ol {
 }
 
 #empty {
-	background-image: url("https://upload.wikimedia.org/wikipedia/commons/b/b0/FIU_Stadium.JPG");
-	background-size:   cover;               
-    background-repeat: no-repeat;
-    background-position: center center;
-	background-attachment: fixed;
 }

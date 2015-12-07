@@ -38,6 +38,8 @@ function makeTabs(tabs)
     div += '<div id="addTab">';
     div += '         <table cellpadding="0" cellspacing="0" border="0" class="display" id="allAssess"></table>';
     div += '         <button type="button" id="addBreak" class="tabButton">Add Assessment</button>';
+    div += '         <h1 id="gtitle">Grade Trends for ' + course +'</h1>'
+    div += '         <div id="empty"><div id="placeholder"></div></div>';
     div += '</div>';
     $('#tabs').append(div);
     $('#tabs ul').append('<li><a href="#addTab">Assessment Managment</a></li>');
@@ -63,6 +65,35 @@ function makeTabs(tabs)
 		        "bAutoWidth": false,
 		        "sPaginationType": "full_numbers",
 				retrieve: true
+		    });
+		},
+		error: function(XMLHttpRequest, textStatus, errorThrown){
+		    alert(errorThrown);
+		}
+	});
+	$.ajax({
+		type: 'POST',
+		url: 'tabs.php',
+		data: {
+		    action: 'PlotPoints',
+	        course: course
+	    },
+		dataType: 'json',
+		success: function(data) {
+		    $.plot($('#placeholder'), [data.slice(0, data.length - 1)], {
+		    	xaxis:{
+		    		axisLabel: "Date",
+		    		ticks: data[data.length - 1]
+		    	},
+		    	yaxis:{
+		    		max: 100,
+		    		axisLabel: "Running Grade"
+		    	},
+		    	series:{
+		    		points: {
+		    			radius: 3
+		    		}
+		    	}
 		    });
 		},
 		error: function(XMLHttpRequest, textStatus, errorThrown){
@@ -176,8 +207,8 @@ function createDiv(assessment)
                 var sOut = '';
                 sOut += '<div id="' + assessmentNoSpace +'Details'+id+'">';
                 sOut += '    <div class="buttonColumnDetails">';
-                sOut += '        <button id="' + assessmentNoSpace + 'Remove'+id+'">Remove</button><br>';
-                sOut += '        <button id="' + assessmentNoSpace + 'Modify'+id+'">Modify</button><br>';
+                sOut += '        <button class="breakdownButton" id="' + assessmentNoSpace + 'Remove'+id+'">Remove</button><br>';
+                sOut += '        <button class="breakdownButton" id="' + assessmentNoSpace + 'Modify'+id+'">Modify</button><br>';
                 sOut += '    </div>';
                 sOut += '</div>';
                 return sOut;
@@ -463,6 +494,7 @@ function addAssesment()
                     $('#AssessmentAddition').dialog("close");
 					gradeTable.fnAddData([
                         assessment,
+                        percentage,
                         "No Grades"
                     ]);
                 }
@@ -500,6 +532,7 @@ function recreateGradeTable()
 		        "aaData": data,
 		        "aoColumns": [
 		            {"sTitle": "Assessment"},
+		            {"sTitle": "Percentage"},
 		            {"sTitle": "Cumulative Average"}
 		        ],
 		        "bJQueryUI": true,
@@ -512,17 +545,6 @@ function recreateGradeTable()
 		    alert(errorThrown);
 		}
 	});
-}
-
-function createHelp()
-{
-	var div = '';
-	div += '<div id="help">';
-	div += '    <p>The purpose of this page is to help students keep track of the grades in their class. In every class the professor has some list of assessment types such as homework, quizes, and test for which each assessment of the type has the same value. So, for instance, a professor might put in his syllabus that homework is worth 30% of the grade, exams are worth 60% and participation is 10%. The student can make a bucket for homework, exam, and participation and add grades for each of those assessment types as shown below.</p>';
-	div += '<p>If two assessments have different weights putting them under the same assessment types will give incorrect values for grade. For instance if a professor puts in their syllabus that exam 1 is worth 20% but exam 2  is worth 30% two different assessments tabs called exam 1 and exam 2 can be creadted but making one assessment tab called exam would give an incorrect grade calculation.</p>';
-	div += '<p>Once the assessment type is created grades can be inserted, deleted or modified as needed and the grade calculation will change accordingly as shown below.</p>';
-	div += '</div>';
-	$('#tabs').append(div);
 }
 
 function removeSpace(string)

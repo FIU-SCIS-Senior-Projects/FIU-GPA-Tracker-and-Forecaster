@@ -36,10 +36,22 @@ function start() {
 				}
 			});
 			
-			$('#PDFimport').ajaxForm();
+			var options = { 
+				success:    function() { 
+					alert('PDF imported successfully!'); 
+				},
+				error:      function(){
+					alert('Error in loading php file.');
+				}
+			};
+			$('#PDFimport').ajaxForm(options);
+			$('#PDFimport').submit(function(){
+				$('#PDFimport').ajaxSubmit();
+				return false;
+			});
 			var control = document.getElementById("Whatif");
 				control.addEventListener("change", function(){
-					$('#PDFimport').ajaxSubmit();
+					$('#PDFimport').trigger("submit");
 				}, false);
 			
 			$('#Reqimport').ajaxForm();
