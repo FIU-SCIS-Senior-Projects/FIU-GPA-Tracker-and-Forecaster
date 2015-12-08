@@ -565,7 +565,7 @@
                      alert("Goal GPA not attainable");
 						}else
 					 if (GPANeeded < 0){
-							 alert("Your Goal GPA has been met!");
+							 alert("Your goal GPA has been met! Congratulations!");
 						}
                  alert("Current GPA: " + gpa + "\nDesired GPA: " + GPAGoal + "\nCredits Remaining: " + creditsLeft + "\n\nAVG GPA needed to maintain: " + GPANeededFormatted + "\n\n");
 
@@ -1402,33 +1402,7 @@
 
                  });
 
-                 var aData = oTable.fnGetData(nTr);
-                 $("#modifyItem" + aData[0]).button();
-                 $("#moveItem" + aData[0]).button();
-                 var divId = "#itemDetails" + aData[0];
-                 $("#modifyItem" + aData[0]).click(function() {
-                     $("#pop2").dialog();
-                     $('#pop2').on('dialogclose', function(event) {
-                         oTable.fnClose(nTr);
-                         (divId).empty();
-                         $(nTr).css("color", "#c5dbec");
-                         $("#pop2").remove();
-                     });
-                 });
-                 $("#modSubmit2").click(function() {
-                     nRelev = $("input[name=nRelev]").val();
-                     nWeight = $("input[name=nWeight]").val();
-                     sto_modWeight(oTable, divId, nTr, nWeight, nRelev);
-                     oTable.fnUpdate([aData[0], aData[1], nWeight, nRelev],
-                         nTr);
-                     $('#pop2').dialog('close');
-
-                 });
-
-                 $("#moveItem" + aData[0]).click(function() {
-                     $(nTr).css("color", "#c5dbec");
-                     addArrow(oTable, nTr);
-                 });
+               
 
              }
 
