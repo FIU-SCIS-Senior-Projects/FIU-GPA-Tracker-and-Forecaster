@@ -46,14 +46,13 @@ function start() {
 			};
 			$('#PDFimport').ajaxForm(options);
 			$('#PDFimport').submit(function(){
-				$('#PDFimport').ajaxSubmit();
+				//$('#PDFimport').ajaxSubmit();
 				return false;
 			});
 			var control = document.getElementById("Whatif");
 				control.addEventListener("change", function(){
 					$('#PDFimport').trigger("submit");
 				}, false);
-			
 			$('#Reqimport').ajaxForm();
 			var control = document.getElementById("ImportReqirments");
 				control.addEventListener("change", function(){

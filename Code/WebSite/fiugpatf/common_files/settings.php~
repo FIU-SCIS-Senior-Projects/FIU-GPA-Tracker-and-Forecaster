@@ -217,6 +217,7 @@ if($action == "importWhatif") {
 						}
 					}
 					
+					echo $bucket . " " . $courseID . "\n";
 					$stmt = $mysqli->prepare("INSERT INTO StudentCourse (grade, weight, relevance, semester, year, courseInfoID, selected, userID) VALUES ('IP', 0, 0, ?, ?, (SELECT CourseInfoID FROM CourseInfo WHERE courseID = ?), 0, ?)");
 					if($stmt !== false)
 					{
@@ -242,7 +243,7 @@ if($action == "importWhatif") {
 					}	
     			}
 			}
-			//shell_exec('rm -rf ' . $username);
+			shell_exec('rm -rf ' . $username);
 			//echo "true";
 		}
 	}
