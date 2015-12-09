@@ -334,7 +334,7 @@
              gradepoints = gradepoints + (4 * credits[i]);
              credithours = credithours + (1 * credits[i]);
          } else if (grades[i] == "A-") {
-             gradepoints = gradepoints + (3.70 *
+             gradepoints = gradepoints + (3.67 *
                  credits[i]);
              credithours = credithours + (1 * credits[i]);
          } else if (grades[i] == "B+") {
@@ -342,26 +342,26 @@
                  credits[i]);
              credithours = credithours + (1 * credits[i]);
          } else if (grades[i] == "B") {
-             gradepoints = gradepoints + (3.3 * credits[
+             gradepoints = gradepoints + (3.0 * credits[
                  i]);
              credithours = credithours + (1 * credits[i]);
          } else if (grades[i] == "B-") {
-             gradepoints = gradepoints + (2.70 *
+             gradepoints = gradepoints + (2.67 *
                  credits[i]);
              credithours = credithours + (1 * credits[i]);
          } else if (grades[i] == "C+") {
-             gradepoints = gradepoints + (2.30 *
+             gradepoints = gradepoints + (2.33 *
                  credits[i]);
              credithours = credithours + (1 * credits[i]);
          } else if (grades[i] == "C") {
              gradepoints = gradepoints + (2 * credits[i]);
              credithours = credithours + (1 * credits[i]);
          } else if (grades[i] == "C-") {
-             gradepoints = gradepoints + (1.70 *
+             gradepoints = gradepoints + (1.67 *
                  credits[i]);
              credithours = credithours + (1 * credits[i]);
          } else if (grades[i] == "D+") {
-             gradepoints = gradepoints + (1.30 *
+             gradepoints = gradepoints + (1.33 *
                  credits[i]);
              credithours = credithours + (1 * credits[i]);
          } else if (grades[i] == "D") {
@@ -369,7 +369,7 @@
                  i]);
              credithours = credithours + (1 * credits[i]);
          } else if (grades[i] == "D-") {
-             gradepoints = gradepoints + (0.70 *
+             gradepoints = gradepoints + (0.67 *
                  credits[i]);
              credithours = credithours + (1 * credits[i]);
          } else if (grades[i] == "F") {
@@ -561,14 +561,73 @@
 
                  var GPANeeded = GPAGoal * (0 + 1) + (GPAGoal - gpa) * (creditsTaken / creditsLeft);
                  var GPANeededFormatted = GPANeeded.toFixed(2);
-                 if (GPANeeded > 4){
+                
+					 if (GPANeeded > 4){
                      alert("The desired GPA currently unattainable with the amount of remaining credits.\nSeek guidance from an advisor for further assistance.");
-						}else
+
+						                 alert("FORECAST REPORT \n\nCurrent GPA: " + gpa + "\nDesired GPA: " + GPAGoal + "\nCredits Remaining: " + creditsLeft + "\n\nAVG GPA needed to maintain: " + GPANeededFormatted + "\n\n");
+
+						}
+
+
 					 if (GPANeeded < 0){
 							 alert("Your goal GPA has been met! Congratulations!");
-						}
-                 alert("Current GPA: " + gpa + "\nDesired GPA: " + GPAGoal + "\nCredits Remaining: " + creditsLeft + "\n\nAVG GPA needed to maintain: " + GPANeededFormatted + "\n\n");
+							                 alert("FORECAST REPORT \n\nCurrent GPA: " + gpa + "\nDesired GPA: " + GPAGoal + "\nCredits Remaining: " + creditsLeft + "\n\nAVG GPA needed to maintain: " + GPANeededFormatted + "\nThis means that if you earn a " + gradeneeded + " in all of your remaining classes, your goal will be met!\n");
 
+
+						}
+
+if (GPANeeded <= 4 && GPANeeded > 3.7){
+var gradeneeded = "A";				
+			 
+							                 alert("FORECAST REPORT \n\nCurrent GPA: " + gpa + "\nDesired GPA: " + GPAGoal + "\nCredits Remaining: " + creditsLeft + "\n\nAVG GPA needed to maintain: " + GPANeededFormatted + "\nThis means that if you earn a " + gradeneeded + " in all of your remaining classes, your goal will be met!\n");
+
+
+						}
+
+if (GPANeeded <= 3.67 && GPANeeded > 3.33){
+var gradeneeded = "A-";				
+			 
+							                 alert("FORECAST REPORT \n\nCurrent GPA: " + gpa + "\nDesired GPA: " + GPAGoal + "\nCredits Remaining: " + creditsLeft + "\n\nAVG GPA needed to maintain: " + GPANeededFormatted + "\nThis means that if you earn a " + gradeneeded + " in all of your remaining classes, your goal will be met!\n");
+
+
+						}
+if (GPANeeded <= 3.33 && GPANeeded > 3.0){
+var gradeneeded = "B+";				
+			 
+							                 alert("FORECAST REPORT \n\nCurrent GPA: " + gpa + "\nDesired GPA: " + GPAGoal + "\nCredits Remaining: " + creditsLeft + "\n\nAVG GPA needed to maintain: " + GPANeededFormatted + "\nThis means that if you earn a " + gradeneeded + " in all of your remaining classes, your goal will be met!\n");
+
+
+						}
+if (GPANeeded <= 3.0 && GPANeeded > 2.67){
+var gradeneeded = "B";				
+			 
+							                 alert("FORECAST REPORT \n\nCurrent GPA: " + gpa + "\nDesired GPA: " + GPAGoal + "\nCredits Remaining: " + creditsLeft + "\n\nAVG GPA needed to maintain: " + GPANeededFormatted + "\nThis means that if you earn a " + gradeneeded + " in all of your remaining classes, your goal will be met!\n");
+
+
+						}
+if (GPANeeded <= 2.67 && GPANeeded > 2.33){
+var gradeneeded = "B-";				
+			 
+							                 alert("FORECAST REPORT \n\nCurrent GPA: " + gpa + "\nDesired GPA: " + GPAGoal + "\nCredits Remaining: " + creditsLeft + "\n\nAVG GPA needed to maintain: " + GPANeededFormatted + "\nThis means that if you earn a " + gradeneeded + " in all of your remaining classes, your goal will be met!\n");
+
+
+						}
+
+if (GPANeeded <= 2.30 && GPANeeded > 2.0){
+var gradeneeded = "C+";				
+			 
+							                 alert("FORECAST REPORT \n\nCurrent GPA: " + gpa + "\nDesired GPA: " + GPAGoal + "\nCredits Remaining: " + creditsLeft + "\n\nAVG GPA needed to maintain: " + GPANeededFormatted + "\nThis means that if you earn a " + gradeneeded + " in all of your remaining classes, your goal will be met!\n");
+
+
+						}
+if (GPANeeded <= 2.0 && GPANeeded > 0){
+var gradeneeded = "C";				
+			 
+							                 alert("FORECAST REPORT \n\nCurrent GPA: " + gpa + "\nDesired GPA: " + GPAGoal + "\nCredits Remaining: " + creditsLeft + "\n\nAVG GPA needed to maintain: " + GPANeededFormatted + "\nThis means that if you earn a " + gradeneeded + " in all of your remaining classes, your goal will be met!\n");
+
+
+						}
 
 
 
