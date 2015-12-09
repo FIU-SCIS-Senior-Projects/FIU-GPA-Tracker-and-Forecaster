@@ -12,9 +12,7 @@
 	<script src=
     "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js">
     </script>
-    <link href=
-    "http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel=
-    "stylesheet">
+    
 	<script type="text/javascript" src="nav.js"></script>
 	<script type='text/javascript' src='insert_course.js'></script>
 	</head>

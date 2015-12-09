@@ -135,7 +135,8 @@ if ($action == "getMinReq") {
         array_push($output2, $qtyN);
         
     }
-    
+    /*get the sum of credits from classes in the user's major MajorBucketRequiredCourses that have been taken, or have been 		    selected, Unioned with the sum of credits from classes in the user's StudentCourse table that have been taken or have been selected.
+*/
     $stmt1 = $mysqli->prepare("Select SUM(credits) FROM (
 SELECT DISTINCT CourseInfo.courseID, CourseInfo.credits, StudentCourse.grade, StudentCourse.selected FROM CourseInfo INNER JOIN StudentCourse ON  
 CourseInfo.courseInfoID = StudentCourse.courseInfoID AND StudentCourse.courseInfoID in
