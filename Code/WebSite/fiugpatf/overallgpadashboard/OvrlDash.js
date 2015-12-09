@@ -562,7 +562,7 @@
                  var GPANeeded = GPAGoal * (0 + 1) + (GPAGoal - gpa) * (creditsTaken / creditsLeft);
                  var GPANeededFormatted = GPANeeded.toFixed(2);
                  if (GPANeeded > 4){
-                     alert("Goal GPA not attainable");
+                     alert("The desired GPA currently unattainable with the amount of remaining credits.\nSeek guidance from an advisor for further assistance.");
 						}else
 					 if (GPANeeded < 0){
 							 alert("Your goal GPA has been met! Congratulations!");
@@ -1045,6 +1045,8 @@
 
  function start() {
 
+
+
      var OvrlDashphpURL = 'OvrlDash.php';
      $.ajax({
          type: 'POST',
@@ -1054,6 +1056,17 @@
              action: 'editStudent'
          },
          success: function(data) {
+
+  var sPath = window.location.pathname;
+var sPage = sPath.substring(sPath.lastIndexOf('/') + 1);
+if(sPage == "student_roster.html"){
+   				if (data.message == "false"){
+						alert(data.why);
+						 $(location).attr('href', 'OvrlDash.html');
+}
+}
+
+
              studRoster = $('#studRost').dataTable({
                  "aaData": data,
                  "aaSorting": [
@@ -1084,6 +1097,7 @@
              alert(errorThrown);
          }
      });
+
      GetGPA();
 
 
@@ -1324,7 +1338,8 @@
 
                              "bAutoWidth": false,
                              "sPaginationType": "full_numbers",
-                             "retrieve": true
+                             "retrieve": true,
+									  "iDisplayLength": 25
                          });
                          $('#coursesTakenDT' + bucketHTMLID + ' tbody tr td').off();
                          $('#coursesTakenDT' + bucketHTMLID + ' tbody tr td').on('click',
@@ -1683,7 +1698,8 @@
 
                              "bAutoWidth": false,
                              "sPaginationType": "full_numbers",
-                             "retrieve": true
+                             "retrieve": true,
+									   "iDisplayLength": 25
                          });
                          $('#coursesNeededDT' + bucketHTMLID + ' tbody tr td').off();
                          $('#coursesNeededDT' + bucketHTMLID + ' tbody tr td').on('click',
@@ -1925,7 +1941,8 @@
 
                              "bAutoWidth": false,
                              "sPaginationType": "full_numbers",
-                             "retrieve": true
+                             "retrieve": true,
+									  "iDisplayLength": 25
                          });
 
                          $('#coursesNeededDT' + bucketHTMLID + ' tbody tr td:nth-child(-n+4)').off();

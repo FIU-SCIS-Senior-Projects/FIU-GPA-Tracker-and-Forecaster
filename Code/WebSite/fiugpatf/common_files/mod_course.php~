@@ -27,7 +27,7 @@ if ($action == "courseMod") {
     
     
 
-    $stmt = $mysqli->prepare("SELECT courseID, courseName, credits FROM CourseInfo ");
+    $stmt = $mysqli->prepare("SELECT courseID, course_name, credits FROM course_info ");
     
     
     $stmt->execute();
@@ -53,7 +53,7 @@ if ($action == "deleteItem") {
     }
     
  
-    $sql  = "DELETE FROM CourseInfo WHERE courseID = '".$courseID."' ";
+    $sql  = "DELETE FROM course_info WHERE courseID = '".$courseID."' ";
     
     if ($mysqli->query($sql) === TRUE) {
         //mysql_query($sql);
@@ -104,7 +104,7 @@ if ($action == "modCourse") {
     
     
     
-    $sql  = "UPDATE CourseInfo SET  courseID ='".$modifiedCourse."', credits ='".$modifiedCredits."', courseName = '".$modifiedName."' WHERE courseID = '".$courseID."' ";
+    $sql  = "UPDATE course_info SET  courseID ='".$modifiedCourse."', credits ='".$modifiedCredits."', course_name = '".$modifiedName."' WHERE courseID = '".$courseID."' ";
     
     
     

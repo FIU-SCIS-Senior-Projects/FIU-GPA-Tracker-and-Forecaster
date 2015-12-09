@@ -6,7 +6,7 @@
 
     sec_session_start();
     $username = $_SESSION['username'];
-    $conn = new mysqli(HOST, USER, PASSWORD, DATABASE);
+    $conn = new mysqli("localhost", "root", "sqliscool", "GPA_Tracker");
 
 
 
