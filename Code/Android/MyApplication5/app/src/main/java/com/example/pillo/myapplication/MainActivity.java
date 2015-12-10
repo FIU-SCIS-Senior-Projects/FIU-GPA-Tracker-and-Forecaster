@@ -138,14 +138,21 @@ public class MainActivity extends AppCompatActivity {
 
                     //Toast.makeText(MainActivity.this,"Response is: " + result.toString(),Toast.LENGTH_LONG).show();
 
-
+                    try{
+                        userID = Integer.parseInt(result.toString());
+                        createAllCoursesPage(result.toString(), username);
+                    }
+                    catch (Exception e){
+                        Toast.makeText(MainActivity.this, "Invalid username or password.", Toast.LENGTH_LONG).show();
+                    }
+                    /*
                     //ImageView myimg = (ImageView) findViewById(R.id.imageView);
-                    if (!result.toString().equals("false")) {
+                    if (result.toString().equals("true")) {
                         createAllCoursesPage(result.toString(), username);
                     } else {
                         Toast.makeText(MainActivity.this, "Invalid username or password.", Toast.LENGTH_LONG).show();
                     }
-
+                    */
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
