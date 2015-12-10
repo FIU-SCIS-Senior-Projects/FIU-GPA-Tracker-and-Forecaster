@@ -452,10 +452,10 @@ if ($action == "getMajorBucketsCourseNeeded") {
     $user   = $_SESSION['username'];
     $userID = $_SESSION['userID'];
     $stmt   = $mysqli->prepare("
-SELECT DISTINCT CourseInfo.courseID, CourseInfo.credits, StudentCourse.weight, StudentCourse.relevance, StudentCourse.courseInfoID, StudentCourse.selected FROM StudentCourse INNER JOIN CourseInfo ON CourseInfo.courseInfoID in (Select courseInfoID From MajorBucketRequiredCourses where bucketID in (Select bucketID FROM MajorBucket where description = '" . $bucket . "' AND  majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')))AND CourseInfo.courseInfoID in (SELECT courseInfoID From StudentCourse Where userID = '" . $userID . "' AND grade = 'ND' )  AND StudentCourse.courseInfoID = CourseInfo.courseInfoID
+SELECT DISTINCT CourseInfo.courseID, CourseInfo.credits, StudentCourse.weight, StudentCourse.relevance, StudentCourse.courseInfoID, StudentCourse.selected FROM StudentCourse INNER JOIN CourseInfo ON CourseInfo.courseInfoID in (Select courseInfoID From MajorBucketRequiredCourses where bucketID in (Select bucketID FROM MajorBucket where description = '" . $bucket . "' AND  majorID in (Select majorID From StudentMajor where userID = '" . $userID . "')))AND CourseInfo.courseInfoID in (SELECT courseInfoID From StudentCourse Where userID = '" . $userID . "' AND grade = 'ND' )  AND StudentCourse.courseInfoID = CourseInfo.courseInfoID And StudentCourse.userID = '" . $userID . "'
 
 UNION
- Select CourseInfo.courseID, CourseInfo.credits, StudentCourse.weight, StudentCourse.relevance, StudentCourse.courseInfoID, StudentCourse.selected From StudentCourse inner join CourseInfo ON StudentCourse.referenceBucket in (Select bucketID from MajorBucket Where description =  '" . $bucket . "' AND majorID in (Select majorID From StudentMajor where userID = '" . $userID . "'))AND StudentCourse.grade = 'ND' AND StudentCourse.courseInfoID = CourseInfo.courseInfoID
+ Select CourseInfo.courseID, CourseInfo.credits, StudentCourse.weight, StudentCourse.relevance, StudentCourse.courseInfoID, StudentCourse.selected From StudentCourse inner join CourseInfo ON StudentCourse.referenceBucket in (Select bucketID from MajorBucket Where description =  '" . $bucket . "' AND majorID in (Select majorID From StudentMajor where userID = '" . $userID . "'))AND StudentCourse.grade = 'ND' AND StudentCourse.courseInfoID = CourseInfo.courseInfoID 
 ");
     
     $stmt->execute();
