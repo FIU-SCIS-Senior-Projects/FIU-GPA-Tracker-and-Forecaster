@@ -14,8 +14,9 @@ if (isset($_POST['adminUser'])) {
         array_push($userID, $output1);
         
     }
+	 
     $_SESSION['userID'] = $userID[0];
-    
+     $_SESSION['type'] = 1;
 } else {
 }
 if (isset($_POST['type'])) {
@@ -23,6 +24,8 @@ if (isset($_POST['type'])) {
 } else {
     $type = '0';
 }
+
+
 if (isset($_POST['action'])) {
     //echo json_encode('inside isset');
     $action = $_POST['action'];
@@ -953,8 +956,23 @@ if ($action == "getCurrentProgram") {
 
 
 if ($action == "editStudent") {
+	  $userID = $_SESSION['userID'];
+		$type = $_SESSION['type'];
+/*    $stmt2 = $mysqli->prepare("SELECT type FROM Users WHERE userID = '".$userID."' ");
+    $stmt2->execute();
+    $stmt2->bind_result($userType);
+    $userTypeArray = array();
+    while ($stmt2->fetch()) {
+        array_push($userTypeArray, array(
+            $userType
+           
+        ));
+    }
+*/
+	 if ($type == 1){
     $user = $_SESSION['username'];
-    $stmt = $mysqli->prepare("SELECT userName, lastName, firstName, email FROM Users WHERE type = '0' ");
+	  $conn   = new mysqli("localhost", "root", "sqliscool", "GPA_Tracker");
+    $stmt = $conn->prepare("SELECT userName, lastName, firstName, email FROM Users WHERE type = '0' ");
     $stmt->execute();
     $stmt->bind_result($suser, $LN, $FN, $mail);
     $output = array();
@@ -967,7 +985,16 @@ if ($action == "editStudent") {
         ));
     }
     echo json_encode($output);
-    
+    }
+else
+{
+ $list      = array(
+        'message' => "false",
+        'why' => "You do not have permission to access this page."
+    );
+    $listArray = json_encode($list);
+    echo $listArray;
+}
 }
 ?>
 
